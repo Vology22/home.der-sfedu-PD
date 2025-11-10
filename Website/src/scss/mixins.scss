@@ -8,7 +8,7 @@
   align-items: center;
 }
 
-$containerMaxWidth: 1440;
+$containerMaxWidth: 1280;
 $containerMinWidth: 320;
 @mixin adaptiveValue($property, $minValue, $maxValue, $unit: px) {
   $valueDiff: $maxValue - $minValue;

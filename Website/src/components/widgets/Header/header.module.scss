@@ -1,0 +1,40 @@
+@use "/src/scss/mixins";
+@use "/src/scss/media";
+
+.header{
+   &_body{
+      @include mixins.adaptiveValue('padding-bottom', 15, 30);
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--color-purple);
+   }
+}
+
+.icon{
+   @include mixins.adaptiveValue('max-width', 40, 60);
+   
+   position: relative;
+}
+
+.navigation{
+   &_link{
+      @include media.hover{
+         background-color: var(--color-lightPurple);
+      }
+      
+      border-radius: 50%;
+   }
+
+   &_button{
+      display: flex;
+      background-color: inherit !important;
+      padding: 10px !important;
+      border-radius: 50% !important;
+
+      @include media.tabletSmall{
+         padding: 7px !important;
+      }
+   }
+}

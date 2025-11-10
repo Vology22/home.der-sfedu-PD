@@ -1,0 +1,13 @@
+.navlink{
+   display: inline-flex;
+   align-items: center;
+   white-space: nowrap;
+   transition: .25s all;
+}
+
+.active{
+   background-color: var(--color-coral);
+}
+.activePurple{
+   background-color: var(--color-purple);
+}

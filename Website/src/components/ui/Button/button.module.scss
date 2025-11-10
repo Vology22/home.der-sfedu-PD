@@ -1,0 +1,27 @@
+@use '../../../scss/mixins';
+@use '../../../scss/media';
+
+.button{
+   @include mixins.adaptiveValue('padding-block', 5, 10);
+   @include mixins.adaptiveValue('padding-inline', 7, 14);
+
+   background-color: var(--color-white);
+   color: var(--color-darkGrey);
+   border-radius: 5px;
+   position: relative;
+   overflow: hidden;
+   text-wrap: nowrap;
+   transition: .15s scale, .25s all;
+   font-family: Montserrat-Medium;
+   user-select: none;
+
+   &:active{scale: .97;}
+
+   span{
+      position: absolute;
+      border-radius: 50%;
+      transition: .25s all ease; 
+      pointer-events: none;
+      will-change: transform, opacity;
+   }
+}
