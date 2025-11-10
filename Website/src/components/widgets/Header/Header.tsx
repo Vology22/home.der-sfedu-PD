@@ -2,6 +2,7 @@ import styles from "./header.module.scss"
 import utils from "../../../scss/utils.module.scss"
 import { FaRegUser } from "react-icons/fa";
 import { Button, Icon, NavLink } from "../../ui";
+import { Sidebar } from "..";
 
 const Header = () => {
    return ( 
@@ -19,6 +20,7 @@ const Header = () => {
                         </Button>
                      </NavLink>
                   </nav>
+                  <Sidebar />
                </div>
             </div>
          </header>

@@ -5,8 +5,8 @@
    @include mixins.adaptiveValue('padding-block', 5, 10);
    @include mixins.adaptiveValue('padding-inline', 7, 14);
 
-   background-color: var(--color-white);
-   color: var(--color-darkGrey);
+   background-color: inherit;
+   color: inherit;
    border-radius: 5px;
    position: relative;
    overflow: hidden;

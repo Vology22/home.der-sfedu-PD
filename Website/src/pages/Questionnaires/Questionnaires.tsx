@@ -6,7 +6,7 @@ const Questionnaires = () => {
       <>
          <section className={styles.wrapper}>
             <div className={utils.container}>
-               
+
             </div>
          </section>
       </>

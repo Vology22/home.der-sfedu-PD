@@ -6,8 +6,10 @@
 }
 
 .active{
-   background-color: var(--color-coral);
+   background-color: var(--color-coral) !important;
+   color: var(--color-white) !important;
 }
 .activePurple{
-   background-color: var(--color-purple);
+   background-color: var(--color-purple) !important;
+   color: var(--color-darkgrey) !important;
 }
