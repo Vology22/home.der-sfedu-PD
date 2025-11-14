@@ -2,7 +2,7 @@
 @use '/src/scss/media';
 
 .sidebar{
-   @include mixins.adaptiveValue('top', 76, 128);
+   @include mixins.adaptiveValue('top', 76, 132);
    @include mixins.adaptiveValue('gap', 20, 10);
    @include mixins.adaptiveValue('max-width', 200, 350);
 
@@ -14,7 +14,7 @@
    display: flex;
    flex-direction: column;
    width: 100%;
-   box-shadow: 0 0 10px  var(--color-lightGrey);
+   box-shadow: 0 0 10px 3px var(--color-lightGrey);
 
    &_link{
       @include media.hover{

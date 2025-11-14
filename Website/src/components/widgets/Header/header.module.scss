@@ -15,14 +15,20 @@
 
 .icon{
    @include mixins.adaptiveValue('max-width', 40, 60);
+   @include media.hover{filter: drop-shadow(0 0 10px var(--color-purple))}
    
    position: relative;
+   transition: .25s all;
 }
 
 .navigation{
    &_link{
       @include media.hover{
          background-color: var(--color-lightPurple) !important;
+      }
+
+      &:active{
+         scale: .97;
       }
       
       border-radius: 50%;
