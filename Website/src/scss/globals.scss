@@ -1,4 +1,5 @@
 @use './variables';
+@use './media';
 @use './mixins';
 @use '../fonts/fonts';
 
@@ -12,6 +13,7 @@ body{
 
 #root{
    @include mixins.adaptiveValue('padding-block', 15, 30);
+   @include media.tabletSmall{padding-bottom: 120px};
 
    position: relative;
    overflow: hidden;
@@ -31,7 +33,7 @@ body{
    border: 2px solid var(--color-lightOrange);
 }
 ::-webkit-scrollbar-thumb:hover{
-   background-color: #ff8965ab;
+   background-color: var(--color-lightCoral);
 }
 *::selection{
 	color: var(--color-lightGrey);

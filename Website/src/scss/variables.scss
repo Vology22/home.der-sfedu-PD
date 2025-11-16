@@ -9,6 +9,7 @@
    --color-purple: #D9C7EB;
    --color-lightOrange: #F5D6C4;
    --color-coral: #FF8A65;
+   --color-lightCoral: #ff8965ab;
 }
 
 %font-heading1{
@@ -16,9 +17,9 @@
    font-family: Montserrat-Bold;
 }
 %font-heading2{
-   @include mixins.adaptiveValue('font-size', 16, 26);
+   @include mixins.adaptiveValue('font-size', 16, 20);
    font-family: Montserrat-Medium;
 }
 %font-main{
-   @include mixins.adaptiveValue('font-size', 12, 16);
+   @include mixins.adaptiveValue('font-size', 14, 16);
 }

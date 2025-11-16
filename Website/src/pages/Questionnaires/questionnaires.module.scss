@@ -2,7 +2,7 @@
 @use "/src/scss/media";
 
 .wrapper{
-   @include mixins.adaptiveValue('padding-top', 15, 30);
+   @include mixins.adaptiveValue('padding-top', 20, 30);
 }
 
 .content{
