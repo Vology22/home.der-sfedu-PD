@@ -43,7 +43,7 @@ const AnimatedScroll = ({children, className, scrollType=bottom, delay = 2}: Typ
             if (entry.isIntersecting) {
                timer.current = setTimeout(() => {
                   const element = entry.target as HTMLElement;
-                  element.style.cssText = 'opacity: 1; translate(0)';
+                  element.style.cssText = 'opacity: 1; translate(0, 0)';
                   observer.unobserve(element);
                }, 100*delay)
             }
@@ -54,7 +54,7 @@ const AnimatedScroll = ({children, className, scrollType=bottom, delay = 2}: Typ
          observer.disconnect();
          clearTimeout(timer.current);
       }
-   }, [])
+   }, [scrollType, delay])
 
    return ( 
       <>

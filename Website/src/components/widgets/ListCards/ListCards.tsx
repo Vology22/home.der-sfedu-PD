@@ -7,7 +7,7 @@ import { TbCoins } from "react-icons/tb";
 import { LuMapPinHouse } from "react-icons/lu";
 import { CgRuler } from "react-icons/cg";
 import styles from "./listCards.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { left, right, top } from "../../ui/AnimatedScroll/AnimatedScroll";
 
 const ListCards = () => {
@@ -43,11 +43,17 @@ const ListCards = () => {
       });
    };
 
+   useEffect(() => {
+      return () => {
+         controls.stop();
+      };
+   }, [controls]);
+
    const card = list[currentItem.id];
 
    return ( 
       <>
-         {card && (
+         {card && (<>
             <AnimatedScroll scrollType={top}>
                <motion.div
                   animate={controls}
@@ -59,19 +65,19 @@ const ListCards = () => {
                   <p className={styles.card_description}>{card.description}</p>
                </motion.div>
             </AnimatedScroll>
-         )}
-         <div className={styles.buttons}>
-            <AnimatedScroll delay={4} scrollType={left}>
-               <Button onClickAdditional={() => setSlide(-1)}>
-                  <Icon Icon={RxCross2} />Не понравилось
-               </Button>
-            </AnimatedScroll>
-            <AnimatedScroll delay={4} scrollType={right}>
-               <Button onClickAdditional={() => setSlide(1)}>
-                  <Icon Icon={IoMdHeartEmpty} />Понравилось
-               </Button>
-            </AnimatedScroll>
-         </div>
+            <div className={styles.buttons}>
+               <AnimatedScroll delay={4} scrollType={left}>
+                  <Button onClickAdditional={() => setSlide(-1)}>
+                     <Icon Icon={RxCross2} />Не понравилось
+                  </Button>
+               </AnimatedScroll>
+               <AnimatedScroll delay={4} scrollType={right}>
+                  <Button onClickAdditional={() => setSlide(1)}>
+                     <Icon Icon={IoMdHeartEmpty} />Понравилось
+                  </Button>
+               </AnimatedScroll>
+            </div>
+         </>)}
       </>
    );
 };
