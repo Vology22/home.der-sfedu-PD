@@ -1,0 +1,95 @@
+@use '/src/scss/media';
+@use '/src/scss/mixins';
+@use '/src/scss/variables';
+
+.wrapper{
+   position: relative;
+   top: 40%;
+}
+
+.comingSoon{
+   position: relative;
+   max-width: 500px;
+   left: 35%;
+
+   @include media.tabletSmall{
+      max-width: 90%;
+      margin-inline: auto;
+      left: auto
+   }
+
+   &_wrapperDoor{
+      @include mixins.adaptiveValue('left', 0, 5);
+      @include mixins.adaptiveValue('top', -5, -3);
+
+      position: absolute;
+      z-index: 55;
+      height: max-content;
+   }
+
+   &_door{
+      width: 40px;
+      opacity: .7;
+   }
+}
+
+.text{
+   @extend %font-heading1;
+
+   overflow: hidden;
+   text-transform: uppercase;
+   position: relative;
+   display: flex;
+   justify-content: center;
+   width: 100%;
+   gap: 15px;
+
+   &::before,
+   &::after{
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 25%;
+      height: 100%;
+      z-index: 50;
+   }
+   &::before{
+      left: 0;
+      background:linear-gradient(90deg, rgba(248, 246, 249, 1) 10%, 
+      rgba(248, 246, 249, 0.6) 60%,
+      rgba(248, 246, 249, 0.1) 100%);
+   }
+   &::after{
+      right: 0;
+      background:linear-gradient(90deg, rgba(248, 246, 249, 0.1) 10%, 
+      rgba(248, 246, 249, 0.6) 60%,
+      rgba(248, 246, 249, 1) 100%);
+   }
+   
+   span{
+      position: relative;
+      display: inline-block;
+      user-select: none;
+      left: 110%;
+      animation-duration: 2.5s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      color: var(--color-white);
+      text-shadow: 0 0 3px var(--color-darkGrey);
+   }
+
+   span:first-child{
+      animation-name: comingSoon-text;
+   }
+   span:nth-child(2){
+      animation-name: comingSoon-text;
+      animation-delay: .1s;
+   }
+}
+
+@keyframes comingSoon-text {
+   0% {left: 100%;}
+   50% {left: 0%;}
+   65% {left: 4%;}
+   100% {left: -100%;}
+}

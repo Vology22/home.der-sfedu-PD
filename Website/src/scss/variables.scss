@@ -13,7 +13,7 @@
 }
 
 %font-heading1{
-   @include mixins.adaptiveValue('font-size', 20, 30);
+   @include mixins.adaptiveValue('font-size', 20, 24);
    font-family: Montserrat-Bold;
 }
 %font-heading2{
