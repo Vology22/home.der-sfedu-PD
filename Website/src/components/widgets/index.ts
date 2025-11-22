@@ -5,5 +5,5 @@ import ListCards from "./ListCards/ListCards";
 export {
    Header,
    Sidebar,
-   ListCards
+   ListCards,
 }

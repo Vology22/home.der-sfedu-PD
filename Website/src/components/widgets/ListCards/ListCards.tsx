@@ -1,14 +1,10 @@
 import { list } from "./ListCards.static";
-import { AnimatedScroll, Button, Icon } from "../../ui";
+import { Button, Icon, Skeleton } from "../../ui";
 import { motion, useAnimation } from "framer-motion";
 import { RxCross2 } from "react-icons/rx";
 import { IoMdHeartEmpty } from "react-icons/io";
-import { TbCoins } from "react-icons/tb";
-import { LuMapPinHouse } from "react-icons/lu";
-import { CgRuler } from "react-icons/cg";
 import styles from "./listCards.module.scss";
-import { useState } from "react";
-import { left, right, top } from "../../ui/AnimatedScroll/AnimatedScroll";
+import { useEffect, useState } from "react";
 
 const ListCards = () => {
    const arrId = list.map(item => item.id);
@@ -22,6 +18,7 @@ const ListCards = () => {
       await controls.start({
          x: 100 * newDirection, 
          opacity: 0,
+         transition: { duration: 0.15 }
       });
 
       const currentIndex = arrId.indexOf(currentItem.id);
@@ -33,44 +30,53 @@ const ListCards = () => {
       setCurrentItem({ id: nextId, direction: newDirection });
 
       controls.set({
-         y: -50,
+         y: -100,
          opacity: 0,
-         x: 0,
+         x: 0
       });
       controls.start({
          y: 0,
          opacity: 1,
+         transition: { duration: 0.15 }
       });
    };
 
+   useEffect(() => {
+      controls.start({
+         y: 0,
+         opacity: 1,
+         transition: { duration: 0.15 }
+      });
+   }, [controls]);
    const card = list[currentItem.id];
 
    return ( 
       <>
-         {card && (
-            <AnimatedScroll scrollType={top}>
-               <motion.div
-                  animate={controls}
-                  className={styles.card}>
-                  <img className={styles.card_image} src={card.image} alt="lodging" />
-                  <p className={styles.card_cost}><TbCoins /> {card.cost}</p>
-                  <p className={styles.card_square}><CgRuler /> {card.square}</p>
-                  <p><LuMapPinHouse /> {card.location}</p>
-                  <p className={styles.card_description}>{card.description}</p>
-               </motion.div>
-            </AnimatedScroll>
+         {card ? (
+            <motion.div
+               animate={controls}
+               initial={{ y: -100, opacity: 0 }}
+               className={styles.card}>
+               <img className={styles.card_image} src={card.image} alt="lodging" />
+               <p className={styles.card_cost}>{card.cost}</p>
+               <p>{card.square}</p>
+               <p>{card.location}</p>
+               <p className={styles.card_description}>{card.description}</p>
+            </motion.div>
+         ) : (
+            <>
+               <Skeleton height={300} />
+               <Skeleton count={3} />
+               <Skeleton height={50} />
+            </>
          )}
          <div className={styles.buttons}>
-            <AnimatedScroll delay={4} scrollType={left}>
-               <Button onClickAdditional={() => setSlide(-1)}>
-                  <Icon Icon={RxCross2} />Не понравилось
-               </Button>
-            </AnimatedScroll>
-            <AnimatedScroll delay={4} scrollType={right}>
-               <Button onClickAdditional={() => setSlide(1)}>
-                  <Icon Icon={IoMdHeartEmpty} />Понравилось
-               </Button>
-            </AnimatedScroll>
+            <Button onClickAdditional={() => setSlide(-1)}>
+               <Icon Icon={RxCross2} />Не понравилось
+            </Button>
+            <Button onClickAdditional={() => setSlide(1)}>
+               <Icon Icon={IoMdHeartEmpty} />Понравилось
+            </Button>
          </div>
       </>
    );

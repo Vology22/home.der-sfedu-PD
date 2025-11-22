@@ -15,8 +15,6 @@
    flex-direction: column;
    width: 100%;
    box-shadow: 0 0 10px 3px var(--color-lightGrey);
-   overflow: hidden;
-   z-index: 100;
 
    &_link{
       @include media.hover{
@@ -25,7 +23,6 @@
 
       border-radius: 10px;
       background-color: var(--color-white);
-      width: 100%;
 
       &:active{scale: .98;}
    }
@@ -56,5 +53,11 @@
       &_button{
          flex-direction: column;
       }
+   }
+   
+   //спин по сайту
+   @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
    }
 }

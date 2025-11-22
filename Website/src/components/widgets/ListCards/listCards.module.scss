@@ -1,46 +1,27 @@
 @use '/src/scss/mixins';
 @use '/src/scss/media';
-@use '/src/scss/variables';
 
 .card{
-   @include mixins.adaptiveValue('padding', 10, 15);
-
    width: 100%;
    background-color: var(--color-purple);
    border-radius: 10px;
    margin-bottom: 20px;
+   padding: 10px;
    box-shadow: 0 0 10px 3px var(--color-lightGrey);
-   position: relative;
-   z-index: 100;
 
    &_image{
       border-radius: 10px;
       margin-bottom: 15px;
    }
 
-   &_cost{
-      @extend %font-heading2;
-   }
-
    &_description{
-      @include mixins.adaptiveValue('padding', 7, 10);
-
       background-color: var(--color-white);
       border-radius: 10px;
+      padding: 10px;
    }
 
-   &_square svg{
-      rotate: -45deg;
-   }
-
-   p{
-      display: flex;
-      align-items: center;
-      gap: 7px;
-
-      svg{@include mixins.adaptiveValue('width', 14, 17); height: auto;}
-
-      &:not(:last-child){margin-bottom: 10px;}
+   p:not(:last-child){
+      margin-bottom: 10px;
    }
 }
 
@@ -49,32 +30,15 @@
    gap: 15px;
    justify-content: center;
 
-   > div{width: 100%;}
-
-   div button{
-      @include media.mobile{padding-block: 10px;}
-      @include media.hover{
-         border-color: var(--color-lightCoral);
-         box-shadow: 0 0 10px var(--color-lightOrange);
-      }
-
+   button{
       display: flex;
       gap: 8px;
       align-items: center;
-      justify-content: center;
       width: 100%;
       border: 2px solid var(--color-lightOrange);
-      transition: .25s all;
 
-      svg{@include media.mobile{display: none;}}
-   }
-
-   div:first-child button{
-      @include media.hover{
-         border-color: var(--color-purple);
-         box-shadow: 0 0 10px var(--color-purple);
+      &:first-child{
+         border: 2px solid var(--color-lightPurple);
       }
-
-      border-color: var(--color-lightPurple);
    }
 }

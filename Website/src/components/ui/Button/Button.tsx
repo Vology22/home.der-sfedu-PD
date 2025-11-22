@@ -6,11 +6,13 @@ interface TypesButton{
    onClickAdditional?: (event: React.MouseEvent<HTMLButtonElement>) => void,
    className?: string,
    type?: "button" | "submit" | "reset",
+   disabled?: boolean,
 }
 
-const Button = ({children, onClickAdditional, className, type = "button"}: TypesButton) => {
+const Button = ({children, onClickAdditional, className, type = "button",  disabled = false}: TypesButton) => {
    const animationRef = useRef<number | null>(null);
    const handleClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+      if (disabled) return;
       const target = event.currentTarget;
       const rect = target.getBoundingClientRect();
       const sizeElement = rect.width / 10;
@@ -41,7 +43,7 @@ const Button = ({children, onClickAdditional, className, type = "button"}: Types
       animationRef.current = requestAnimationFrame(animate);
 
       onClickAdditional?.(event);
-   }, [onClickAdditional])
+   }, [onClickAdditional, disabled])
 
    useEffect(() => {
       return () => {
@@ -51,7 +53,7 @@ const Button = ({children, onClickAdditional, className, type = "button"}: Types
 
    return ( 
       <>
-         <button type={type} className={`${styles.button} ${className || ''}`} onClick={(event) => {handleClick(event)}}>{children}</button>
+         <button type={type} className={`${styles.button} ${className || ''}`} onClick={(event) => {handleClick(event)}} disabled={disabled}>{children}</button>
       </>   
    );
 }

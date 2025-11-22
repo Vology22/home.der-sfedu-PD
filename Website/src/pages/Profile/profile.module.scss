@@ -1,0 +1,226 @@
+
+@use '/src/scss/variables';
+@use '/src/scss/mixins';
+@use '/src/scss/media';
+
+.wrapper {
+  @include mixins.adaptiveValue('padding-top', 15, 30);
+}
+
+.profile {
+  @include mixins.adaptiveValue('max-width', 390, 500);
+  position: relative;
+  left: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  @include media.tabletSmall{
+      left: 50%;
+      transform: translateX(-50%);
+   }
+
+   .loading, .error {
+      background-color: var(--color-purple);
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 0 10px 3px var(--color-lightGrey);
+      width: 100%; 
+      margin: 0; 
+   }
+
+   .loading {
+      &_spinner {
+         width: 40px;
+         height: 40px;
+         border: 3px solid var(--color-lightGrey);
+         border-top: 3px solid var(--color-coral);
+         border-radius: 50%;
+         animation: spin 1s linear infinite;
+         margin: 0 auto 15px;
+      }
+
+      &_text {
+         @extend %font-heading2;
+         color: var(--color-darkGrey);
+      }
+   }
+
+   .error {
+      background-color: var(--color-purple);
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 0 10px 3px var(--color-lightGrey);
+
+      &_message {
+         @extend %font-heading2;
+         color: var(--color-darkGrey);
+         margin-bottom: 20px;
+      }
+   }   
+}
+
+// Первый прямоугольник - пока только подтверждение, в дальнешем фото профиля
+.photo_card {
+  width: 100%;
+  background-color: var(--color-purple);
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 0 10px 3px var(--color-lightGrey);
+  text-align: center;
+
+   &_verified {
+      @extend %font-main;
+      color: var(--color-darkGrey);
+      background-color: var(--color-lightPurple);
+      padding: 6px 15px;
+      border-radius: 15px;
+      display: inline-block;
+      font-family: Montserrat-Medium;
+      font-size: 0.9em;
+   }
+}
+
+// Второй прямоугольник - личная информация
+.info_card {
+   width: 100%;
+   background-color: var(--color-purple);
+   border-radius: 10px;
+   padding: 25px;
+   box-shadow: 0 0 10px 3px var(--color-lightGrey);
+
+   &_title {
+      @extend %font-heading2;
+      color: var(--color-darkGrey);
+      margin: 0 0 20px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-lightPurple);
+      font-size: 14px;
+      font-weight: 600;
+   }
+   
+   &_edit_button {
+      background-color: var(--color-coral) !important;
+      color: var(--color-white) !important;
+   }
+
+   &_grid {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+   }
+
+   &_item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+   }
+
+   &_label {
+      @extend %font-main;
+      font-family: Montserrat-Medium;
+      color: var(--color-darkGrey);
+      opacity: 0.8;
+      font-size: 0.9em;
+      margin-bottom: 3px;
+   }
+
+   &_value {
+      @extend %font-main;
+      color: var(--color-darkGrey);
+      padding: 10px 15px;
+      background-color: var(--color-lightGrey);
+      border-radius: 8px;
+      border: 1px solid var(--color-lightPurple);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+   }
+
+   &_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-lightPurple);
+  }
+}
+
+.input_container {
+   position: relative;
+   width: 100%;
+
+   .info_card_input {
+      @extend %font-main;
+      color: var(--color-darkGrey);
+      padding: 10px 15px;
+      background-color: var(--color-white);
+      border-radius: 8px;
+      border: 1px solid var(--color-lightPurple);
+      min-height: 44px;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      
+      &:focus {
+         outline: none;
+         border-color: var(--color-coral);
+         box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+      }
+      
+      &::placeholder {
+         color: var(--color-darkGrey);
+         opacity: 0.5;
+      }
+      
+      &:disabled {
+         background-color: var(--color-lightGrey);
+         cursor: not-allowed;
+      }
+
+      &.input_error {
+         border-color: #fc6b6b !important;
+         box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2) !important;
+      }
+   }
+
+   .error_text {
+      @extend %font-main;
+      color: #fc6b6b;
+      font-size: 0.8em;
+      margin-top: 5px;
+      display: block;
+      font-family: Montserrat-Medium;
+   }
+}
+
+// Стили для кнопок
+.edit_controls {
+   display: flex;
+   gap: 15px;
+   margin-top: 25px;
+   padding-top: 20px;
+   border-top: 2px solid var(--color-lightPurple);
+   justify-content: flex-end;
+
+   .cancel_button {
+      background-color: var(--color-lightGrey) !important;
+      color: var(--color-darkGrey) !important;
+      border: 1px solid var(--color-lightPurple) !important;
+   }
+
+   .save_button {
+      background-color: var(--color-coral) !important;
+      color: var(--color-white) !important;
+      
+      &:disabled {
+         background-color: var(--color-lightGrey) !important;
+         color: var(--color-darkGrey) !important;
+         cursor: not-allowed;
+         opacity: 0.6;
+      }
+   }
+}
