@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { User, UserFormData } from './User';
-import {UserData } from './UserData.static';
+import { User, UserFormData } from '../pages/Profile/User';
+import {UserData } from '../pages/Profile/UserData.static';
 
 export const useUserData = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -25,7 +25,7 @@ export const useUserData = () => {
     }
   },[]);
 
-  const updateUser = async (userData: UserFormData): Promise<boolean> => {
+  const updateUser = useCallback (async (userData: UserFormData): Promise<boolean> => {
     try {
       setLoading(true);
       setError(null);
@@ -47,7 +47,7 @@ export const useUserData = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[setUser, setLoading, setError]);
 
   return {
     user,

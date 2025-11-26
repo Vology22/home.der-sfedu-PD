@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { useUserData } from './useUserData';
+import { useUserData } from '../../hooks/useUserData';
 import styles from './Profile.module.scss';
 import { Button } from "../../components/ui";
 import { UserFormData } from './User';
