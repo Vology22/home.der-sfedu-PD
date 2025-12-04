@@ -1,6 +1,10 @@
 @use "/src/scss/mixins";
 @use "/src/scss/media";
 
+.wrapper{
+   @include mixins.adaptiveValue('padding-top', 15, 30);
+}
+
 .content{
    @include mixins.adaptiveValue('max-width', 390, 500);
 
