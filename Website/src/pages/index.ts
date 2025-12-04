@@ -1,3 +1,4 @@
+import ExtendedCard from "./ExtendedCard/ExtendedCard";
 import Filter from "./Filter/Filter";
 import Layout from "./Layout/Layout";
 import Like from "./Like/Like";
@@ -7,5 +8,6 @@ export {
    Layout,
    Questionnaires,
    Like,
-   Filter
+   Filter,
+   ExtendedCard
 }

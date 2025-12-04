@@ -9,7 +9,7 @@ const Sidebar = () => {
             {navigations.map(item => {return(
                <AnimatedScroll key={item.id} delay={item.id + 3}>
                   <NavLink className={styles.sidebar_link} path={item.path}>
-                     <Button  className={styles.sidebar_button}>
+                     <Button className={styles.sidebar_button}>
                         <Icon Icon={item.image} />
                         <p>{item.text}</p>
                      </Button>

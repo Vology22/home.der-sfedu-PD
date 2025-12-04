@@ -6,6 +6,7 @@ $paddingContainer: 15;
    max-width: #{mixins.$containerMaxWidth + $paddingContainer*2}px;
    margin-inline: auto;
    padding-inline: #{$paddingContainer}px;
+   position: relative;
 }
 
 .visually_hidden{

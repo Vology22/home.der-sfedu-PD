@@ -13,7 +13,7 @@
    left: 35%;
 
    @include media.tabletSmall{
-      max-width: 90%;
+      max-width: auto;
       margin-inline: auto;
       left: auto
    }
@@ -29,7 +29,7 @@
 
    &_door{
       width: 40px;
-      opacity: .7;
+      opacity: .5;
    }
 }
 

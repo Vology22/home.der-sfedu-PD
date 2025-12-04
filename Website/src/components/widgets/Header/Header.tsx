@@ -13,7 +13,7 @@ const Header = () => {
             <div className={utils.container}>
                <AnimatedScroll scrollType={none} className={styles.header_body}>
                   <AnimatedScroll delay={3} scrollType={top} className={styles.icon}>
-                     <Link to="/"><img src="src\assets\png\icon.png" alt="icon" /></Link>
+                     <Link to="/"><img src="\src\assets\png\icon.png" alt="icon" /></Link>
                   </AnimatedScroll>
                   <AnimatedScroll delay={5} scrollType={top} className={styles.navigation}>
                      <NavLink className={styles.navigation_link} isPurple path="/profile">
@@ -22,8 +22,8 @@ const Header = () => {
                         </Button>
                      </NavLink>
                   </AnimatedScroll>
-                  <Sidebar />
                </AnimatedScroll>
+               <Sidebar />
             </div>
          </header>
       </>

@@ -1,5 +1,5 @@
 import { list } from "./ListCards.static";
-import { AnimatedScroll, Button, Icon } from "../../ui";
+import { AnimatedScroll, Button, ReactionButton } from "../../ui";
 import { motion, useAnimation } from "framer-motion";
 import { RxCross2 } from "react-icons/rx";
 import { IoMdHeartEmpty } from "react-icons/io";
@@ -7,15 +7,15 @@ import { TbCoins } from "react-icons/tb";
 import { LuMapPinHouse } from "react-icons/lu";
 import { CgRuler } from "react-icons/cg";
 import styles from "./listCards.module.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { left, right, top } from "../../ui/AnimatedScroll/AnimatedScroll";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../providers/AuthContext";
+import { wrap } from "framer-motion";
 
 const ListCards = () => {
    const arrId = list.map(item => item.id);
-   const [currentItem, setCurrentItem] = useState({
-      id: arrId[0],
-      direction: -1 | 1
-   });
+   const { currentCard, setCurrentCard } = useContext(AuthContext);
 
    const controls = useAnimation();
    const setSlide = async (newDirection: -1 | 1) => {
@@ -24,13 +24,10 @@ const ListCards = () => {
          opacity: 0,
       });
 
-      const currentIndex = arrId.indexOf(currentItem.id);
-      let nextIndex = currentIndex + newDirection;
-      if (nextIndex >= arrId.length) nextIndex = 0;
-      if (nextIndex < 0) nextIndex = arrId.length - 1;
-      const nextId = arrId[nextIndex];
+      const currentIndex = arrId.indexOf(currentCard.id);
+      const nextId = arrId[wrap(0, arrId.length, currentIndex + newDirection)];
 
-      setCurrentItem({ id: nextId, direction: newDirection });
+      setCurrentCard({ id: nextId, direction: newDirection });
 
       controls.set({
          y: -50,
@@ -48,34 +45,31 @@ const ListCards = () => {
          controls.stop();
       };
    }, [controls]);
+   const card = list[currentCard.id];
 
-   const card = list[currentItem.id];
+   const navigate = useNavigate();
+   const handleDetails = () => {
+      navigate(`/card/${currentCard.id}`);
+   }
 
    return ( 
       <>
          {card && (<>
             <AnimatedScroll scrollType={top}>
-               <motion.div
-                  animate={controls}
-                  className={styles.card}>
-                  <img className={styles.card_image} src={card.image} alt="lodging" />
-                  <p className={styles.card_cost}><TbCoins /> {card.cost}</p>
-                  <p className={styles.card_square}><CgRuler /> {card.square}</p>
-                  <p><LuMapPinHouse /> {card.location}</p>
+               <motion.div animate={controls} className={styles.card}>
+                  <img className={styles.card_image} src={card.image[0]} alt="lodging" />
+                  <div className={styles.card_content}>
+                     <p className={styles.card_cost}><TbCoins /> {card.cost}</p>
+                     <p className={styles.card_square}><CgRuler /> {card.square}</p>
+                     <p><LuMapPinHouse /> {card.location}</p>
+                     <Button className={styles.card_detailed} onClickAdditional={handleDetails}>Подробнее</Button>
+                  </div>
                   <p className={styles.card_description}>{card.description}</p>
                </motion.div>
             </AnimatedScroll>
             <div className={styles.buttons}>
-               <AnimatedScroll delay={4} scrollType={left}>
-                  <Button onClickAdditional={() => setSlide(-1)}>
-                     <Icon Icon={RxCross2} />Не понравилось
-                  </Button>
-               </AnimatedScroll>
-               <AnimatedScroll delay={4} scrollType={right}>
-                  <Button onClickAdditional={() => setSlide(1)}>
-                     <Icon Icon={IoMdHeartEmpty} />Понравилось
-                  </Button>
-               </AnimatedScroll>
+               <ReactionButton direction={left} icon={RxCross2} functionClick={() => setSlide(-1)}>Не понравилось</ReactionButton>
+               <ReactionButton direction={right} icon={IoMdHeartEmpty} functionClick={() => setSlide(1)}>Понравилось</ReactionButton>
             </div>
          </>)}
       </>

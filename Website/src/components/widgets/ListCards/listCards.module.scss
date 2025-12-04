@@ -18,9 +18,27 @@
       margin-bottom: 15px;
    }
 
-   &_cost{
-      @extend %font-heading2;
+   &_content{
+      position: relative;
+      margin-bottom: 15px;
    }
+
+   &_detailed{
+      @include mixins.adaptiveValue('font-size', 12, 14);
+      @include media.hover{border-radius: 3px;}
+
+      color: var(--color-white);
+      background-color: var(--color-coral);
+      height: max-content;
+      border-radius: 7px;
+      padding-block: 8px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .25s all;
+   }
+
+   &_cost{@extend %font-heading2;}
 
    &_description{
       @include mixins.adaptiveValue('padding', 7, 10);
@@ -29,9 +47,7 @@
       border-radius: 10px;
    }
 
-   &_square svg{
-      rotate: -45deg;
-   }
+   &_square svg{rotate: -45deg;}
 
    p{
       display: flex;

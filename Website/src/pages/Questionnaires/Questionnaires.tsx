@@ -9,7 +9,7 @@ const Questionnaires = () => {
 
    return ( 
       <>
-         <section className={styles.wrapper}>
+         <section>
             <div className={utils.container}>
                <div className={styles.content}>
                   {isLoading ? <>

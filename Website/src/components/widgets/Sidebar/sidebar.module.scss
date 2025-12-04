@@ -7,7 +7,6 @@
    @include mixins.adaptiveValue('max-width', 200, 350);
 
    position: absolute;
-   left: 0;
    background-color: var(--color-purple);
    padding: 15px;
    border-radius: 10px;
@@ -21,6 +20,7 @@
    &_link{
       @include media.hover{
          background-color: var(--color-lightOrange);
+         border-radius: 5px;
       }
 
       border-radius: 10px;
