@@ -1,0 +1,8 @@
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.csproj.AssemblyReference.cache
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.AssemblyInfoInputs.cache
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.AssemblyInfo.cs
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.csproj.CoreCompileInputs.cache
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.RazorAssemblyInfo.cache
+C:\Users\Alexey\Desktop\HomederProfile\obj\Debug\net8.0\HomederProfile.RazorAssemblyInfo.cs
