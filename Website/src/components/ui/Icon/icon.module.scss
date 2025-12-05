@@ -1,0 +1,10 @@
+@use '/src/scss/media';
+@use "/src/scss/mixins";
+
+.icon{
+   @include mixins.adaptiveValue('width', 20, 25);
+
+   cursor: pointer;
+   height: auto;
+   color: var(--color-darkGray);
+}

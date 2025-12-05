@@ -1,0 +1,8 @@
+@use '/src/scss/mixins.scss';
+
+main{
+   @include mixins.adaptiveValue('padding-top', 20, 30);
+
+   flex-grow: 1;
+   flex-basis: 0;
+}

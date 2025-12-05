@@ -1,0 +1,25 @@
+@use '../scss/mixins';
+@use '../scss/media';
+
+:root{
+   --color-darkGrey: #333333;
+   --color-lightGrey: #E0E0E0;
+   --color-white: #F8F6F9;
+   --color-lightPurple: #E5D9F2;
+   --color-purple: #D9C7EB;
+   --color-lightOrange: #F5D6C4;
+   --color-coral: #FF8A65;
+   --color-lightCoral: #ff8965ab;
+}
+
+%font-heading1{
+   @include mixins.adaptiveValue('font-size', 20, 24);
+   font-family: Montserrat-Bold;
+}
+%font-heading2{
+   @include mixins.adaptiveValue('font-size', 16, 20);
+   font-family: Montserrat-Medium;
+}
+%font-main{
+   @include mixins.adaptiveValue('font-size', 14, 16);
+}

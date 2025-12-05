@@ -1,0 +1,60 @@
+@use '/src/scss/mixins';
+@use '/src/scss/media';
+
+.sidebar{
+   @include mixins.adaptiveValue('top', 76, 132);
+   @include mixins.adaptiveValue('gap', 20, 10);
+   @include mixins.adaptiveValue('max-width', 200, 350);
+
+   position: absolute;
+   background-color: var(--color-purple);
+   padding: 15px;
+   border-radius: 10px;
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   box-shadow: 0 0 10px 3px var(--color-lightGrey);
+   overflow: hidden;
+   z-index: 100;
+
+   &_link{
+      @include media.hover{
+         background-color: var(--color-lightOrange);
+         border-radius: 5px;
+      }
+
+      border-radius: 10px;
+      background-color: var(--color-white);
+      width: 100%;
+
+      &:active{scale: .98;}
+   }
+
+   &_button{
+      @include mixins.adaptiveValue('gap', 5, 10);
+
+      width: 100%;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+
+      &:active{scale: 1;}
+   }
+
+   @include media.tabletSmall{
+      top: auto;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      flex-direction: row;
+      max-width: 100%;
+      border-radius: 0;
+      justify-content: center;
+      background-color: var(--color-white);
+      border-top: 2px solid var(--color-lightOrange);
+
+      &_button{
+         flex-direction: column;
+      }
+   }
+}

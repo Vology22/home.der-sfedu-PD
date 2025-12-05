@@ -1,0 +1,46 @@
+@use "/src/scss/mixins";
+@use "/src/scss/media";
+
+.header{
+   &_body{
+      @include mixins.adaptiveValue('padding-bottom', 20, 30);
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--color-purple);
+      position: relative;
+   }
+}
+
+.icon{
+   @include mixins.adaptiveValue('max-width', 40, 60);
+   @include media.hover{filter: drop-shadow(0 0 10px var(--color-purple))}
+   
+   position: relative;
+   transition: .25s all;
+}
+
+.navigation{
+   &_link{
+      @include media.hover{
+         background-color: var(--color-lightPurple) !important;
+      }
+
+      &:active{
+         scale: .97;
+      }
+      
+      border-radius: 50%;
+   }
+
+   &_button{
+      display: flex;
+      padding: 10px !important;
+      border-radius: 50% !important;
+
+      @include media.tabletSmall{
+         padding: 7px !important;
+      }
+   }
+}

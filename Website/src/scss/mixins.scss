@@ -1,0 +1,26 @@
+@mixin flexCenter($isInline: false){
+  @if $isInline{
+    display: inline-flex;
+  } @else{
+    display: flex;
+  }
+  justify-content: center;
+  align-items: center;
+}
+
+$containerMaxWidth: 1280;
+$containerMinWidth: 320;
+@mixin adaptiveValue($property, $minValue, $maxValue, $unit: px) {
+  $valueDiff: $maxValue - $minValue;
+  $viewportDiff: $containerMaxWidth - $containerMinWidth;
+
+  #{$property}: #{$maxValue}#{$unit};
+  @media (max-width: #{$containerMaxWidth}px) and (min-width: #{$containerMinWidth}px) {
+    #{$property}: calc(
+        #{$minValue}#{$unit} + #{$valueDiff} * ((100vw - #{$containerMinWidth}#{$unit}) / #{$viewportDiff})
+    );
+  }
+  @media (max-width: #{$containerMinWidth}px) {
+    #{$property}: #{$minValue}#{$unit};
+  }
+}
