@@ -19,16 +19,16 @@ channel_id = -1003305629380
 url_webapp = 'https://sfedu.ru/'
 API_YANDEX_GEO = 'f890c5b3-ee8d-4585-8a32-cb803e92c57d'
 
-# Конфигурация базы данных MySQL (под вашу структуру)
+# Конфигурация базы данных MySQL
 DB_CONFIG = {
     'host': '194.87.101.244',
     'database': 'homeder',
-    'user': 'user',  # Замените на вашего пользователя
-    'password': '123456789',  # Замените на ваш пароль
+    'user': 'user',
+    'password': '123456789',
     'port': 3306
 }
 
-# Путь для сохранения фото локально (если нет удаленного сервера)
+# Путь для сохранения фото локально
 UPLOAD_PATH = 'uploads/'
 os.makedirs(UPLOAD_PATH, exist_ok=True)
 
@@ -92,7 +92,10 @@ def save_property_to_db(owner_db_id, price, title, description, district, addres
         cursor = connection.cursor()
         
         try:
-            # Собираем полное описание с дополнительными полями
+            # ЗАКОММЕНТИРОВАНО: Пока сохраняем только базовые поля, остальные в description
+            # TODO: Когда в БД добавятся поля, нужно будет раскомментировать и изменить запрос
+            
+            # Объединяем все дополнительные данные в описание
             full_description = f"""
 {description}
 
@@ -104,9 +107,18 @@ def save_property_to_db(owner_db_id, price, title, description, district, addres
 ⏰ Срок проживания: {time_of_stay}
             """.strip()
             
+            # ЗАКОММЕНТИРОВАНО: Расширенная версия с дополнительными полями
+            # """
+            # INSERT INTO properties (owner_id, price, title, description, city, district, address, type_home, square, tenants, time_of_stay)
+            # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            # """
+            # 
+            # cursor.execute(insert_query, (owner_db_id, price, title, description, "Ростов-на-Дону", district, address, type_home, square, tenants, time_of_stay))
+            
+            # Текущая версия - только основные поля
             insert_query = """
-            INSERT INTO properties (owner_id, price, title, description, city)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO properties (owner_id, price, title, description)
+            VALUES (%s, %s, %s, %s)
             """
             
             cursor.execute(insert_query, (owner_db_id, price, title, full_description))
@@ -200,8 +212,7 @@ def download_and_save_photo(photo_file, user_id, property_id=None):
         with open(full_path, 'wb') as f:
             f.write(downloaded_file)
         
-        # Генерируем URL (для локального использования относительный путь)
-        # В реальном проекте это должен быть полный URL: http://ваш-домен/uploads/filename.jpg
+        # Генерируем URL
         photo_url = f"/uploads/{filename}"
         
         # Также создаем миниатюру
@@ -227,7 +238,7 @@ def create_thumbnail(image_data, filename):
         full_thumb_path = os.path.join(thumb_path, filename)
         
         image = Image.open(io.BytesIO(image_data))
-        image.thumbnail((300, 300))  # Максимальный размер 300x300
+        image.thumbnail((300, 300))
         image.save(full_thumb_path, 'JPEG', quality=85)
         
         return True
@@ -237,10 +248,10 @@ def create_thumbnail(image_data, filename):
 
 def webAppKeyboard():
     """Создание клавиатуры с webapp кнопкой"""
-    keyboard = types.ReplyKeyboardMarkup()
+    keyboard = types.InlineKeyboardMarkup()
     web_app = types.WebAppInfo(url_webapp)
     button = types.InlineKeyboardButton(text="Смотреть жильё", web_app=web_app)
-    keyboard = types.InlineKeyboardMarkup([[button]])
+    keyboard.add(button)
     return keyboard
 
 def get_address_yandex(latitude, longitude):
@@ -358,30 +369,30 @@ def Adress(message):
 
 def TypeHome(message, district):
     if message.content_type == 'location':
-        adress = get_address_yandex(message.location.latitude, message.location.longitude)
+        address = get_address_yandex(message.location.latitude, message.location.longitude)
     elif message.content_type == 'text':
-        adress = message.text
+        address = message.text
     else:
-        adress = "Адрес не указан"
+        address = "Адрес не указан"
     
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     house = telebot.types.KeyboardButton(text="Частный дом")  
     flat = telebot.types.KeyboardButton(text="Квартира")   
     keyboard.add(house, flat)
     msg = bot.send_message(message.from_user.id, 'Тип жилья', reply_markup=keyboard)
-    bot.register_next_step_handler(msg, Square, district, adress)
+    bot.register_next_step_handler(msg, Square, district, address)
 
-def Square(message, district, adress):
+def Square(message, district, address):
     typeHome = message.text
     msg = bot.send_message(message.from_user.id, 'Напишите площадь жилья в м²', reply_markup=ReplyKeyboardRemove())
-    bot.register_next_step_handler(msg, Tenants, district, adress, typeHome)
+    bot.register_next_step_handler(msg, Tenants, district, address, typeHome)
 
-def Tenants(message, district, adress, typeHome):
+def Tenants(message, district, address, typeHome):
     square = message.text
     msg = bot.send_message(message.from_user.id, 'Количество сожителей')
-    bot.register_next_step_handler(msg, TimeOfStay, district, adress, typeHome, square)
+    bot.register_next_step_handler(msg, TimeOfStay, district, address, typeHome, square)
 
-def TimeOfStay(message, district, adress, typeHome, square):
+def TimeOfStay(message, district, address, typeHome, square):
     tenants = message.text
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     one_night = telebot.types.KeyboardButton(text="На одну ночь")
@@ -390,33 +401,30 @@ def TimeOfStay(message, district, adress, typeHome, square):
     hz = telebot.types.KeyboardButton(text="Договор")
     keyboard.add(one_night, one_week, one_mounth, hz)
     msg = bot.send_message(message.from_user.id, 'Введите время, на которое готовы подселить к себе сожителя', reply_markup=keyboard)
-    bot.register_next_step_handler(msg, PropertyTitle, district, adress, typeHome, square, tenants)
+    bot.register_next_step_handler(msg, PropertyTitle, district, address, typeHome, square, tenants)
 
-def PropertyTitle(message, district, adress, typeHome, square, tenants):
+def PropertyTitle(message, district, address, typeHome, square, tenants):
     time_of_stay = message.text
     msg = bot.send_message(message.from_user.id, 'Придумайте название для вашего объявления (например: "Уютная квартира в центре"):')
-    bot.register_next_step_handler(msg, PropertyDescription, district, adress, typeHome, square, tenants, time_of_stay)
+    bot.register_next_step_handler(msg, PropertyDescription, district, address, typeHome, square, tenants, time_of_stay)
 
-def PropertyDescription(message, district, adress, typeHome, square, tenants, time_of_stay):
+def PropertyDescription(message, district, address, typeHome, square, tenants, time_of_stay):
     title = message.text
     msg = bot.send_message(message.from_user.id, 'Опишите ваше жилье подробнее:')
-    bot.register_next_step_handler(msg, PropertyPrice, district, adress, typeHome, square, tenants, time_of_stay, title)
+    bot.register_next_step_handler(msg, PropertyPrice, district, address, typeHome, square, tenants, time_of_stay, title)
 
-
-def PropertyPrice(message, district, adress, typeHome, square, tenants, time_of_stay, title):
+def PropertyPrice(message, district, address, typeHome, square, tenants, time_of_stay, title):
     description = message.text
     msg = bot.send_message(message.from_user.id, 'Введите плату\n\n_P\.S\.Это необязательно должны быть деньги_', reply_markup=ReplyKeyboardRemove(), parse_mode="MarkdownV2")
-    bot.register_next_step_handler(msg, PropertyPhotos, district, adress, typeHome, square, tenants, time_of_stay, title, description)
+    bot.register_next_step_handler(msg, PropertyPhotos, district, address, typeHome, square, tenants, time_of_stay, title, description)
 
-def PropertyPhotos(message, district, adress, typeHome, square, tenants, time_of_stay, title, description):
+def PropertyPhotos(message, district, address, typeHome, square, tenants, time_of_stay, title, description):
     price_text = message.text
     
-    # Преобразуем цену в число, если возможно
     try:
         if price_text.lower() in ['бесплатно', 'free', '0', 'ноль']:
             price = 0
         else:
-            # Убираем всё, кроме цифр
             price = int(''.join(filter(str.isdigit, price_text)))
     except:
         price = 0
@@ -428,7 +436,7 @@ def PropertyPhotos(message, district, adress, typeHome, square, tenants, time_of
     user_data = {
         'user_id': user_id,
         'district': district,
-        'adress': adress,
+        'address': address,
         'typeHome': typeHome,
         'square': square,
         'tenants': tenants,
@@ -436,7 +444,7 @@ def PropertyPhotos(message, district, adress, typeHome, square, tenants, time_of
         'title': title,
         'description': description,
         'price': price,
-        'photos': []  # Будем хранить объекты фото
+        'photos': []
     }
     
     bot.register_next_step_handler(msg, collect_property_photos, user_data)
@@ -444,7 +452,6 @@ def PropertyPhotos(message, district, adress, typeHome, square, tenants, time_of
 def collect_property_photos(message, user_data):
     """Сбор фотографий для объявления"""
     if message.content_type == 'photo':
-        # Сохраняем фото
         photo_file = message.photo[-1]
         user_data['photos'].append(photo_file)
         
@@ -466,7 +473,6 @@ def collect_property_photos(message, user_data):
             bot.register_next_step_handler(msg, confirm_no_photos, user_data)
             return
         
-        # Сохраняем объявление в БД
         save_property_to_database(message, user_data)
     
     else:
@@ -486,7 +492,7 @@ def save_property_to_database(message, user_data):
     """Сохранение всего объявления в БД"""
     bot.send_chat_action(message.from_user.id, 'typing')
     
-    # 1. Сохраняем пользователя в БД (если еще не сохранен)
+    # 1. Сохраняем пользователя в БД
     user_db_id = save_user_to_db(
         user_data['user_id'],
         message.from_user.full_name or "Пользователь",
@@ -505,7 +511,7 @@ def save_property_to_database(message, user_data):
         user_data['title'],
         user_data['description'],
         user_data['district'],
-        user_data['adress'],
+        user_data['address'],
         user_data['typeHome'],
         user_data['square'],
         user_data['tenants'],
@@ -517,7 +523,7 @@ def save_property_to_database(message, user_data):
         get_menu(message)
         return
     
-    # 3. Сохраняем фотографии
+    # 3. Сохраняем фотографии в таблицу prop_image
     photo_urls = []
     if user_data['photos']:
         for i, photo_file in enumerate(user_data['photos']):
@@ -526,27 +532,20 @@ def save_property_to_database(message, user_data):
                 photo_urls.append(photo_result['photo_url'])
         
         if photo_urls:
+            # Фотографии сохраняются в таблицу prop_image
             save_property_images(property_id, photo_urls)
     
     # 4. Отправляем подтверждение пользователю
     summary = (
         f'✅ Объявление успешно сохранено!\n\n'
-        f'🏠 *{user_data["title"]}*\n'
-        f'📍 *Город:* {user_data["city"]}\n'
-        f'📌 *Район:* {user_data["district"]}\n'
-        f'🏠 *Адрес:* {user_data["adress"]}\n'
-        f'📐 *Тип жилья:* {user_data["typeHome"]}\n'
+        f'🏠 *Адрес:* {user_data["address"]}\n'
         f'📏 *Площадь:* {user_data["square"]} м²\n'
-        f'👥 *Сожителей:* {user_data["tenants"]}\n'
-        f'⏰ *Срок проживания:* {user_data["time_of_stay"]}\n'
         f'💰 *Плата:* {user_data["price"] if user_data["price"] > 0 else "Бесплатно"} руб.\n'
-        f'📝 *Описание:* {user_data["description"]}\n'
-        f'🖼 *Фото:* {len(photo_urls)} добавлено\n\n'
+        f'📷 *Фотографий:* {len(photo_urls)} добавлено\n\n'
         f'ID объявления: #{property_id}'
     )
     
     if user_data['photos']:
-        # Отправляем первое фото с подписью
         bot.send_photo(message.from_user.id, 
                       user_data['photos'][0].file_id,
                       caption=summary,
@@ -586,7 +585,7 @@ def add_to_favorites(call):
 def get_start(message):
     print(f"\nСтарт! Пользователь: {message.from_user.id}")
     
-    # Создаем папку для загрузок если её нет
+    # Создаем папку для загрузок
     os.makedirs(UPLOAD_PATH, exist_ok=True)
     os.makedirs(os.path.join(UPLOAD_PATH, 'thumbs'), exist_ok=True)
     
@@ -598,7 +597,6 @@ def get_start(message):
     bot.send_chat_action(chat_id=message.from_user.id, action="typing")
     time.sleep(1)
     
-    # Приветственное сообщение
     welcome_text = (
         "🏡 *Добро пожаловать в Homeder!*\n\n"
         "Здесь вы можете:\n"
@@ -610,7 +608,6 @@ def get_start(message):
     
     bot.send_message(message.from_user.id, welcome_text, 
                     parse_mode="Markdown", reply_markup=keyboard_theme)
-    return
 
 @bot.message_handler(commands=['menu'])
 def get_menu(message):
