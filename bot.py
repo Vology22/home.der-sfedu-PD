@@ -636,8 +636,16 @@ def show_help(message):
         "4. Загрузите фото (опционально)"
     )
     bot.send_message(message.from_user.id, help_text, parse_mode="Markdown")
-
+import time
+from requests.exceptions import ReadTimeout
 if __name__ == '__main__':
-    print("Бот запущен...")
-    print(f"Файлы будут сохраняться в: {os.path.abspath(UPLOAD_PATH)}")
-    bot.polling(none_stop=True)
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=0, timeout=60)
+        except ReadTimeout as e:
+            print(f"Timeout error: {e}")
+            print("Reconnecting in 5 seconds...")
+            time.sleep(5)
+        except Exception as e:
+            print(f"Other error: {e}")
+            time.sleep(5)
