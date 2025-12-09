@@ -1,33 +1,33 @@
-User.csusing System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HomederProfile.Models
 {
-	[Table("users")]  // Это таблица в базе данных
-	public class User
-	{
-		[Key]  // Главный ключ таблицы
-		[Column("user_id")]
-		public ulong UserId { get; set; }
+    [Table("users")]  // РЈРєР°Р·С‹РІР°РµРј РёРјСЏ С‚Р°Р±Р»РёС†С‹ РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С…
+    public class User
+    {
+        [Key]  // РЈРєР°Р·С‹РІР°РµРј РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡
+        [Column("user_id")]
+        public ulong UserId { get; set; }
 
-		[Column("full_name")]
-		[StringLength(120)]
-		public string? FullName { get; set; }
+        [Column("full_name")]
+        [StringLength(120)]
+        public string? FullName { get; set; }
 
-		[Column("bio")]
-		public string? Bio { get; set; }
+        [Column("bio")]
+        public string? Bio { get; set; }
 
-		[Column("tg_id")]
-		[StringLength(48)]
-		public string? TgId { get; set; }
+        [Column("tg_id")]
+        [StringLength(48)]
+        public string? TgId { get; set; }
 
-		[Column("created_at")]
-		public DateTime CreatedAt { get; set; }
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
 
-		// Связи с другими таблицами
-		public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
-		public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
-	}
+        // РЎРІСЏР·СЊ СЃ РґСЂСѓРіРёРјРё СЃСѓС‰РЅРѕСЃС‚СЏРјРё
+        public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
+        public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+    }
 }

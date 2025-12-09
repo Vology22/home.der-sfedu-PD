@@ -14,15 +14,15 @@ namespace HomederProfile.Controllers
             _context = context;
         }
 
-        // Главная страница
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         public async Task<IActionResult> Index(string? userId)
         {
-            // Проверяем, есть ли параметр userId в URL
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ userId пїЅ URL
             if (!string.IsNullOrEmpty(userId) && ulong.TryParse(userId, out ulong id))
             {
                 await LoadUserData(id);
             }
-            // Проверяем сессию
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             else
             {
                 var sessionUserId = HttpContext.Session.GetString("CurrentUserId");
@@ -35,7 +35,7 @@ namespace HomederProfile.Controllers
             return View();
         }
 
-        // API для установки пользователя (вызывается из JavaScript)
+        // API пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ JavaScript)
         [HttpPost]
         public async Task<IActionResult> SetUser([FromBody] SetUserRequest request)
         {
@@ -55,7 +55,7 @@ namespace HomederProfile.Controllers
                 return NotFound(new { error = "User not found" });
             }
 
-            // Сохраняем в сессии
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             HttpContext.Session.SetString("CurrentUserId", request.UserId);
 
             return Ok(new
@@ -71,7 +71,7 @@ namespace HomederProfile.Controllers
             });
         }
 
-        // API для получения данных пользователя
+        // API пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         [HttpGet]
         public async Task<IActionResult> GetUser(ulong id)
         {
@@ -91,7 +91,7 @@ namespace HomederProfile.Controllers
             });
         }
 
-        // API для получения объявлений пользователя
+        // API пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         [HttpGet]
         public async Task<IActionResult> GetUserProperties(ulong userId)
         {
@@ -106,7 +106,7 @@ namespace HomederProfile.Controllers
                     p.City,
                     p.Description,
                     p.CreatedAt,
-                    CoverImage = p.Images.FirstOrDefault(i => i.IsCover)?.ImgUrl
+                    CoverImage = p\.Images\.FirstOrDefault(i => i\.IsCover) \?\.ImgUrl/CoverImage = p\.Images\.FirstOrDefault(i => i\.IsCover) != null ? p\.Images\.FirstOrDefault(i => i\.IsCover)!.ImgUrl : null/
                 })
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -114,14 +114,14 @@ namespace HomederProfile.Controllers
             return Json(properties);
         }
 
-        // Выход из профиля
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("CurrentUserId");
             return RedirectToAction("Index");
         }
 
-        // Вспомогательный метод для загрузки данных
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         private async Task LoadUserData(ulong userId)
         {
             var user = await _context.Users.FindAsync(userId);
@@ -138,7 +138,7 @@ namespace HomederProfile.Controllers
         }
     }
 
-    // Модель для запроса
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public class SetUserRequest
     {
         public string? UserId { get; set; }

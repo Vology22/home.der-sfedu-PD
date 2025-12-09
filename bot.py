@@ -103,7 +103,7 @@ def save_property_to_db(owner_db_id, price, title, description, district, addres
 🏠 Адрес: {address}
 📐 Тип жилья: {type_home}
 📏 Площадь: {square} м²
-👥 Количество сожителей: {tenants}
+👥 Количество соседей: {tenants}
 ⏰ Срок проживания: {time_of_stay}
             """.strip()
             
@@ -283,6 +283,7 @@ def get_address_yandex(latitude, longitude):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
+    bot.delete_message(call.from_user.id, call.message.id)
     if call.data == "check":
         user_in_channel = bot.get_chat_member(channel_id, call.from_user.id)
         if user_in_channel.status in ["member", "administrator", "creator"]:
@@ -389,7 +390,7 @@ def Square(message, district, address):
 
 def Tenants(message, district, address, typeHome):
     square = message.text
-    msg = bot.send_message(message.from_user.id, 'Количество сожителей')
+    msg = bot.send_message(message.from_user.id, 'Количество соседей')
     bot.register_next_step_handler(msg, TimeOfStay, district, address, typeHome, square)
 
 def TimeOfStay(message, district, address, typeHome, square):
@@ -400,12 +401,13 @@ def TimeOfStay(message, district, address, typeHome, square):
     one_mounth = telebot.types.KeyboardButton(text="На один месяц")
     hz = telebot.types.KeyboardButton(text="Договор")
     keyboard.add(one_night, one_week, one_mounth, hz)
-    msg = bot.send_message(message.from_user.id, 'Введите время, на которое готовы подселить к себе сожителя', reply_markup=keyboard)
+    msg = bot.send_message(message.from_user.id, 'Введите время, на которое готовы подселить к себе соседа', reply_markup=keyboard)
     bot.register_next_step_handler(msg, PropertyTitle, district, address, typeHome, square, tenants)
 
 def PropertyTitle(message, district, address, typeHome, square, tenants):
     time_of_stay = message.text
-    msg = bot.send_message(message.from_user.id, 'Придумайте название для вашего объявления (например: "Уютная квартира в центре"):')
+    keyboard = telebot.types.ReplyKeyboardRemove()
+    msg = bot.send_message(message.from_user.id, 'Придумайте название для вашего объявления (например: "Уютная квартира в центре"):', reply_markup=keyboard)
     bot.register_next_step_handler(msg, PropertyDescription, district, address, typeHome, square, tenants, time_of_stay)
 
 def PropertyDescription(message, district, address, typeHome, square, tenants, time_of_stay):
