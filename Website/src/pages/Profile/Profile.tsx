@@ -18,8 +18,16 @@ const Profile = () => {
   } = useForm<UserFormData>({
     mode: 'onChange', 
     defaultValues: {
+      avatar: undefined,
       name: '',
-      dateOfBirth: ''
+      surname: '',
+      patronymic: '',
+      dateOfBirth: '',
+      gender: 'male',
+      badHabits: [],
+      pet: [],
+      hasRoommate: false,  
+      roommateName: '',
     }
   });
 
@@ -30,9 +38,25 @@ const Profile = () => {
   useEffect(() => {
     if (user && !isEditing) {
       setValue('name', user.name, { shouldDirty: false });
+      setValue('surname', user.surname, { shouldDirty: false });
+      setValue('patronymic', user.patronymic, { shouldDirty: false });
       setValue('dateOfBirth', user.dateOfBirth, { shouldDirty: false });
+      setValue('gender', user.gender, { shouldDirty: false });
+      setValue('badHabits', user.badHabits, { shouldDirty: false });
+      setValue('pet', user.pet, { shouldDirty: false });
+      setValue('hasRoommate', user.hasRoommate, { shouldDirty: false });
+      setValue('roommateName', user.roommateName, { shouldDirty: false });
     }
   }, [user, setValue, isEditing]);
+
+  const getInitials = (name: string): string => {
+    return name
+      .split(' ')
+      .map(part => part.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -41,8 +65,16 @@ const Profile = () => {
   const handleCancel = () => {
     if (user) {
       reset({
+        avatar: user.avatar,
         name: user.name,
-        dateOfBirth: user.dateOfBirth
+        surname: user.surname,
+        patronymic: user.patronymic,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,      
+        badHabits: user.badHabits,
+        pet: user.pet,
+        hasRoommate: user.hasRoommate,
+        roommateName: user.roommateName
       });
     }
     setIsEditing(false);
@@ -101,7 +133,20 @@ const Profile = () => {
       <div className={styles.profile}>
         {/* Первый прямоугольник - фото профиля */}
         <div className={styles.photo_card}>
-            <div className={styles.photo_card_verified}> ✓ Профиль подтвержден
+          {user.avatar ? (
+            <img 
+              src={user.avatar} 
+              alt={`Аватар ${user.name}`}
+              className={styles.photo_card_image}
+            />
+          ) : (
+            <div className={styles.photo_card_placeholder}>
+              {getInitials(user.name)}
+            </div>
+          )}
+          <Button className={styles.photo_card_change_text}>Нажмите, чтобы изменить фото</Button>  
+          <div className={styles.photo_card_verified}>
+            ✓ Профиль подтвержден
           </div>
         </div>
 
@@ -135,15 +180,60 @@ const Profile = () => {
                           message: 'Имя слишком длинное'
                         },
                         pattern: {
-                          value: /^[A-Za-zА-Яа-яЁё\s]+$/,
-                          message: 'Имя может содержать только буквы и пробелы'
+                          value: /^[A-Za-zА-Яа-яЁё]+$/,
+                          message: 'Имя может содержать только буквы'
                         }
                       })}
                     /> {errors.name && (<span className={styles.error_text}>{errors.name.message}</span>)}
                   </div>
                 ) : (<span className={styles.info_card_value}>{user.name}</span>)}
               </div>
-              
+              {/* Поле фамилии */}
+              <div className={styles.info_card_item}>
+                <span className={styles.info_card_label}>Фамилия</span>
+                {isEditing ? (
+                  <div className={styles.input_container}>
+                    <input type="text" className={`${styles.info_card_input} ${ errors.surname ? styles.input_error : '' }`}
+                      placeholder="Введите вашу фамилию"
+                      {...register('surname', {
+                        required: 'Фамилия обязательна для заполнения',
+                        minLength: {
+                          value: 2,
+                          message: 'Фамилия должна содержать минимум 2 символа'
+                        },
+                        maxLength: {
+                          value: 50,
+                          message: 'Фамилия слишком длинная'
+                        },
+                        pattern: {
+                          value: /^[A-Za-zА-Яа-яЁё]+$/,
+                          message: 'Фамилия может содержать только буквы'
+                        }
+                      })}
+                    /> {errors.surname && (<span className={styles.error_text}>{errors.surname.message}</span>)}
+                  </div>
+                ) : (<span className={styles.info_card_value}>{user.surname}</span>)}
+              </div>
+              {/* Поле отчества*/}
+              <div className={styles.info_card_item}>
+                <span className={styles.info_card_label}>Отчество</span>
+                {isEditing ? (
+                  <div className={styles.input_container}>
+                    <input type="text" className={`${styles.info_card_input} ${ errors.patronymic ? styles.input_error : '' }`}
+                      placeholder="Введите ваше отчество"
+                      {...register('patronymic', {
+                        validate: (value) => {
+                          if (!value || value.trim() === '') return true; 
+                          if (value.trim().length < 2) return 'Отчество должно содержать минимум 2 символа';
+                          if (value.trim().length > 50) return 'Отчество слишком длинное (максимум 50 символов)';
+                          if (!/^[A-Za-zА-Яа-яЁё\s]+$/.test(value.trim())) return 'Отчество может содержать только буквы и пробелы';
+                          return true;
+                        }
+                      })}
+                    /> {errors.patronymic && (<span className={styles.error_text}>{errors.patronymic.message}</span>)}
+                  </div>
+                ) : (<span className={styles.info_card_value}>{user.patronymic || '-'}</span>)}
+              </div>
               {/* Поле даты рождения */}
               <div className={styles.info_card_item}>
                 <span className={styles.info_card_label}>Дата рождения</span>
@@ -178,6 +268,10 @@ const Profile = () => {
                   </div>
                 ) : ( <span className={styles.info_card_value}>{user.dateOfBirth}</span>)}
               </div>
+              {/* Поле пола */}
+              {/* Поле плохих привычек*/}
+              {/* Поле соседа */}
+              {/* Поле имени соседа если он есть */}
             </div>
 
             {/* Кнопки редактирования */}
