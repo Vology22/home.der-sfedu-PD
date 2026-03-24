@@ -8,10 +8,9 @@ export const UserData: User = {
   patronymic: "Владимировна",
   dateOfBirth: "05.12.2005",
   gender: 'female',
-  badHabits: [],
-  pet: [],
-  hasRoommate: false,  
-  roommateName: '',
+  badHabits: 'no',
+  pet: 'no',
+  hasRoommate: 'no',
 };
 
 

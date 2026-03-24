@@ -7,12 +7,10 @@ export interface User {
   dateOfBirth: string;
   gender: 'male' | 'female';
   
-  badHabits?: string[];
-  pet?: string[];
+  badHabits: 'yes' | 'no';
+  pet: 'yes' | 'no';
 
-  hasRoommate: boolean;  
-  roommateName?: string;
-  
+  hasRoommate: 'yes' | 'no';
 }
 
 export interface UserFormData {
@@ -23,9 +21,8 @@ export interface UserFormData {
   dateOfBirth: string;
   gender: User['gender'];
   
-  badHabits?: string[];
-  pet?: string[];
+  badHabits: User['badHabits'];  
+  pet: User['pet'];  
 
-  hasRoommate: boolean;  
-  roommateName?: string;
+  hasRoommate: User['hasRoommate'];  
 }

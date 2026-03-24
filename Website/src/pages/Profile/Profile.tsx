@@ -24,10 +24,9 @@ const Profile = () => {
       patronymic: '',
       dateOfBirth: '',
       gender: 'male',
-      badHabits: [],
-      pet: [],
-      hasRoommate: false,  
-      roommateName: '',
+      badHabits: 'no',
+      pet: 'no',
+      hasRoommate: 'no',  
     }
   });
 
@@ -45,7 +44,6 @@ const Profile = () => {
       setValue('badHabits', user.badHabits, { shouldDirty: false });
       setValue('pet', user.pet, { shouldDirty: false });
       setValue('hasRoommate', user.hasRoommate, { shouldDirty: false });
-      setValue('roommateName', user.roommateName, { shouldDirty: false });
     }
   }, [user, setValue, isEditing]);
 
@@ -74,7 +72,6 @@ const Profile = () => {
         badHabits: user.badHabits,
         pet: user.pet,
         hasRoommate: user.hasRoommate,
-        roommateName: user.roommateName
       });
     }
     setIsEditing(false);
@@ -269,11 +266,92 @@ const Profile = () => {
                 ) : ( <span className={styles.info_card_value}>{user.dateOfBirth}</span>)}
               </div>
               {/* Поле пола */}
+              <div className={styles.info_card_item}>
+                <span className={styles.info_card_label}>Пол</span>
+                {isEditing ? (
+                  <div className={styles.input_container}>
+                    <div className={styles.radio_group}>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="male"
+                          {...register('gender', { required: 'Пол обязателен' })}/>
+                        <span>Мужской</span>
+                      </label>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="female"
+                          {...register('gender')} />
+                        <span>Женский</span>
+                      </label>
+                    </div>
+                    {errors.gender && (<span className={styles.error_text}>{errors.gender.message}</span>)}
+                  </div>
+                ) : (
+                  <span className={styles.info_card_value}>{user.gender === 'male' ? 'Мужской' : 'Женский'}</span>)}
+              </div>
               {/* Поле плохих привычек*/}
+              <div className={styles.info_card_item}>
+                <span className={styles.info_card_label}>Плохие привычки</span>
+                {isEditing ? (
+                  <div className={styles.input_container}>
+                    <div className={styles.radio_group}>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="no"
+                          {...register('badHabits', { required: 'Поле обязателено для заполнения' })}/>
+                        <span>Нет</span>
+                      </label>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="yes"
+                          {...register('badHabits')} />
+                        <span>Есть</span>
+                      </label>
+                    </div>
+                    {errors.badHabits && (<span className={styles.error_text}>{errors.badHabits.message}</span>)}
+                  </div>
+                ) : (<span className={styles.info_card_value}>{user.badHabits === 'yes' ? 'Есть' : 'Нет'}</span>)}
+              </div>
+              {/* Поле питомцев*/}
+              <div className={styles.info_card_item}>
+                <span className={styles.info_card_label}>Питомцы</span>
+                {isEditing ? (
+                  <div className={styles.input_container}>
+                    <div className={styles.radio_group}>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="no"
+                          {...register('pet', { required: 'Поле обязателено для заполнения' })}/>
+                        <span>Нет</span>
+                      </label>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="yes"
+                          {...register('pet')} />
+                        <span>Есть</span>
+                      </label>
+                    </div>
+                    {errors.pet && (<span className={styles.error_text}>{errors.pet.message}</span>)}
+                  </div>
+                ) : (<span className={styles.info_card_value}>{user.pet === 'yes' ? 'Есть' : 'Нет'}</span>)}
+              </div>
               {/* Поле соседа */}
-              {/* Поле имени соседа если он есть */}
-            </div>
+              <div className={styles.info_card_item}>
+                <span className={styles.info_card_label}>Сожитель</span>
+                {isEditing ? (
+                  <div className={styles.input_container}>
+                    <div className={styles.radio_group}>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="no"
+                          {...register('hasRoommate', { required: 'Поле обязателено для заполнения' })}/>
+                        <span>Нет</span>
+                      </label>
+                      <label className={styles.radio_option}>
+                        <input type="radio" value="yes"
+                          {...register('hasRoommate')} />
+                        <span>Есть</span>
+                      </label>
+                    </div>
+                    {errors.hasRoommate && (<span className={styles.error_text}>{errors.hasRoommate.message}</span>)}
+                  </div>
+                ) : (<span className={styles.info_card_value}>{user.hasRoommate === 'yes' ? 'Есть' : 'Нет'}</span>)}
+              </div>
 
+            </div>
             {/* Кнопки редактирования */}
             {isEditing && (
               <div className={styles.edit_controls}>

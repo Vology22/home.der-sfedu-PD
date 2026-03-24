@@ -43,7 +43,6 @@ export const useUserData = () => {
         badHabits: userData.badHabits,
         pet: userData.pet,
         hasRoommate: userData.hasRoommate,
-        roommateName: userData.roommateName,
       } : null);
       
       setError('');
