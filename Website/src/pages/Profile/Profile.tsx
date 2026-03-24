@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useUserData } from '../../hooks/useUserData';
 import styles from './Profile.module.scss';
 import { Button } from "../../components/ui";
@@ -8,7 +8,9 @@ import { UserFormData } from './User';
 const Profile = () => {
   const { user, loading, error, fetchUser, updateUser } = useUserData();
   const [isEditing, setIsEditing] = useState(false);
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  
   const {
     register,
     handleSubmit,
@@ -47,6 +49,7 @@ const Profile = () => {
     }
   }, [user, setValue, isEditing]);
 
+  //Получаем инициалы, если аватара нет
   const getInitials = (name: string): string => {
     return name
       .split(' ')
@@ -58,6 +61,40 @@ const Profile = () => {
 
   const handleEdit = () => {
     setIsEditing(true);
+  };
+
+  //Изменение аватара
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Простая валидация
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Файл не должен превышать 5 МБ');
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      alert('Можно загружать только изображения');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      setAvatarPreview(base64);                       
+      setValue('avatar', base64, { shouldDirty: true }); 
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDeleteAvatar = () => {
+    if (!user) return;
+    if (!user.avatar && !avatarPreview) return; 
+      setAvatarPreview(null);
+      setValue('avatar', undefined, { shouldDirty: true });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; 
+      }
   };
 
   const handleCancel = () => {
@@ -73,6 +110,7 @@ const Profile = () => {
         pet: user.pet,
         hasRoommate: user.hasRoommate,
       });
+      setAvatarPreview(null); 
     }
     setIsEditing(false);
   };
@@ -130,18 +168,23 @@ const Profile = () => {
       <div className={styles.profile}>
         {/* Первый прямоугольник - фото профиля */}
         <div className={styles.photo_card}>
-          {user.avatar ? (
-            <img 
-              src={user.avatar} 
-              alt={`Аватар ${user.name}`}
-              className={styles.photo_card_image}
-            />
+          {avatarPreview ? (
+            <img src={avatarPreview} alt="Предпросмотр" className={styles.photo_card_image} />
+          ) : user.avatar ? (
+            <img src={user.avatar} alt={`Аватар ${user.name}`} className={styles.photo_card_image} />
           ) : (
             <div className={styles.photo_card_placeholder}>
               {getInitials(user.name)}
             </div>
           )}
-          <Button className={styles.photo_card_change_text}>Нажмите, чтобы изменить фото</Button>  
+          <input type="file" ref={fileInputRef} accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+          <Button className={styles.photo_card_c} onClickAdditional={() => fileInputRef.current?.click()} disabled={!isEditing} >
+            Нажмите, чтобы изменить фото
+          </Button>
+          {isEditing && (user.avatar || avatarPreview) && (
+          <Button className={styles.photo_card_d} onClickAdditional={handleDeleteAvatar}>
+            Удалить фото
+          </Button> )}
           <div className={styles.photo_card_verified}>
             ✓ Профиль подтвержден
           </div>
