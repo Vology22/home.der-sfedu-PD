@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HomederMatchService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3694e78e68ec61bdae9d7cf3c1bbe3f7624ab4e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5265a90491c9430c8ccf3ae777b460f6ff711b4")]
 [assembly: System.Reflection.AssemblyProductAttribute("HomederMatchService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HomederMatchService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
