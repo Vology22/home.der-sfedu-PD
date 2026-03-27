@@ -1,0 +1,42 @@
+export const list = [
+   {
+      id: 0,
+      image: "https://i.pinimg.com/736x/77/1f/42/771f424a61d6f2ebe466cf99f02f15ee.jpg",
+      cost: "75 000 ₽/мес",
+      square: "85 м²",
+      location: "Москва, Кутузовский проспект, 32",
+      description: "Элитная квартира с панорамными окнами и видом на город. Премиум класс.",
+   },
+   {
+      id: 1,
+      image: "https://s.hdnux.com/photos/01/35/45/56/24533936/3/rawImage.jpg",
+      cost: "54 000 ₽/мес",
+      square: "75 м²",
+      location: "Улица Пушкина дом 27",
+      description: "Современная квартира с дизайнерским ремонтом. Вид на парк.",
+   },
+   {
+      id: 2,
+      image: "https://avatars.mds.yandex.net/i?id=e1a733d220025eb654ef7ed85baceada_l-5299794-images-thumbs&n=13",
+      cost: "50 000 ₽/мес",
+      square: "75 м²",
+      location: "Москва, Кутузовский проспект, 35",
+      description: "Уютная квартира в центре города. Все удобства рядом.",
+   },
+   {
+      id: 3,
+      image: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/3fb7ef37852799.574e8335426e7.jpg",
+      cost: "67 000 ₽/мес",
+      square: "80 м²",
+      location: "Москва, Кутузовский проспект, 40",
+      description: "Просторная квартира с высокими потолками и балконом.",
+   },
+   {
+      id: 4,
+      image: "https://picsy.ru/images/photos/1200/2/kvartira-studiya-foto-interer-31807485.jpg",
+      cost: "55 000 ₽/мес",
+      square: "70 м²",
+      location: "Москва, ул. Арбат, 5",
+      description: "Квартира в историческом здании с современным ремонтом.",
+   },
+];

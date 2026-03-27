@@ -1,0 +1,34 @@
+.skeleton{
+   display: block;
+   position: relative;
+   background-color: var(--color-lightGrey);
+   overflow: hidden;
+   user-select: none;
+   margin-bottom: .5rem;
+
+   &::before{
+      content: '';
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      display: block;
+      height: 100%;
+      background-repeat: no-repeat;
+      background: linear-gradient(90deg, 
+         var(--color-lightGrey) 25%, 
+         var(--color-white) 50%, 
+         var(--color-lightGrey) 75%);
+      animation-name: skeleton-loading;
+      animation-duration: 1.5s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      transform: translateX(-100%);
+   }
+}
+
+@keyframes skeleton-loading {
+   100% {
+      transform: translateX(100%);
+   }
+}
