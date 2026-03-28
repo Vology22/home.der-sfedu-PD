@@ -11,9 +11,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3001;
 
-// Включаем CORS для фронтенда
+// Включаем CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // ваш Vite dev сервер
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 
@@ -23,25 +23,26 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Настройка multer для сохранения файлов
+console.log('Upload directory:', uploadDir);
+
+// Настройка multer для временного хранения
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    // Генерируем уникальное имя файла: userId_ timestamp_ оригинальное имя
-    const { userId } = req.body;
     const timestamp = Date.now();
     const ext = path.extname(file.originalname);
-    const safeName = `${userId}_${timestamp}${ext}`;
-    cb(null, safeName);
+    const tempName = `temp_${timestamp}${ext}`;
+    console.log('[filename] Temporary name:', tempName);
+    cb(null, tempName);
   }
 });
 
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB лимит
+    fileSize: 5 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -56,21 +57,47 @@ const upload = multer({
 // Endpoint для загрузки аватарки
 app.post('/api/upload-avatar', upload.single('avatar'), (req, res) => {
   try {
+    console.log('=== UPLOAD AVATAR ENDPOINT ===');
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+    
     const file = req.file;
     const { userId } = req.body;
 
+    console.log('Extracted userId from body:', userId);
+
     if (!file) {
+      console.error('No file uploaded');
       return res.status(400).json({ error: 'Файл не загружен' });
     }
 
+    const oldPath = file.path;
+    const ext = path.extname(file.originalname);
+    const timestamp = Date.now();
+    
+    // Используем userId для имени файла
+    let safeUserId = userId;
+    if (!safeUserId || safeUserId === 'undefined' || safeUserId === 'null' || safeUserId === '') {
+      safeUserId = 'user';
+    }
+    
+    const newFilename = `${safeUserId}_${timestamp}${ext}`;
+    const newPath = path.join(uploadDir, newFilename);
+    
+    console.log('Renaming file:', { oldPath, newPath, newFilename });
+    
+    fs.renameSync(oldPath, newPath);
+    
+    console.log('File saved as:', newFilename);
+    
     // Формируем URL для доступа к файлу
-    const avatarUrl = `http://localhost:${PORT}/uploads/avatars/${file.filename}`;
+    const avatarUrl = `http://localhost:${PORT}/uploads/avatars/${newFilename}`;
     
     res.json({
       success: true,
-      path: file.path,
+      path: newPath,
       url: avatarUrl,
-      filename: file.filename
+      filename: newFilename
     });
   } catch (error) {
     console.error('Ошибка при загрузке:', error);
@@ -78,16 +105,21 @@ app.post('/api/upload-avatar', upload.single('avatar'), (req, res) => {
   }
 });
 
+// Endpoint для удаления аватарки
 app.delete('/api/delete-avatar/:filename', (req, res) => {
   try {
     const { filename } = req.params;
+    console.log('=== DELETE AVATAR ENDPOINT ===');
+    console.log('Filename to delete:', filename);
     
-    // Защита от path traversal
     const safeFilename = path.basename(filename);
     const filePath = path.join(uploadDir, safeFilename);
     
+    console.log('Full path:', filePath);
+    
     // Проверяем, существует ли файл
     if (!fs.existsSync(filePath)) {
+      console.log('File not found:', filePath);
       return res.status(404).json({ error: 'Файл не найден' });
     }
     
@@ -111,4 +143,5 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.listen(PORT, () => {
   console.log(`Avatar server running on http://localhost:${PORT}`);
+  console.log(`Upload directory: ${uploadDir}`);
 });

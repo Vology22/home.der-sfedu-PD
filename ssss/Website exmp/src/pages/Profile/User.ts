@@ -1,6 +1,6 @@
 export interface User {
   id: string;
-  avatar?: string; 
+  avatar?: string | undefined;
   name: string;
   surname: string;
   patronymic?: string;

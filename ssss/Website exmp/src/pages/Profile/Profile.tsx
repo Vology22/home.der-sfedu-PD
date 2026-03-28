@@ -97,12 +97,11 @@ const Profile = () => {
     if (!user) return;
     if (!user.avatar && !avatarPreview) return;
     
-    // Только локально помечаем, что аватар нужно удалить
+    console.log('[Profile] Отмечаем аватарку для удаления');
     setAvatarPreview(null);
     setValue('avatar', undefined, { shouldDirty: true });
     setIsAvatarDeleted(true);
     
-    // Очищаем input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -128,17 +127,22 @@ const Profile = () => {
   };
 
   const onSubmit = async (data: UserFormData) => {
-    // Если пользователь удалил аватарку (avatarPreview === null и data.avatar === undefined)
+    // Если пользователь удалил аватарку 
     if (isAvatarDeleted && user?.avatar) {
+      console.log('[Profile.onSubmit] Удаляем аватарку...');
       try {
-        // Удаляем аватарку на сервере
-        await avatarService.deleteUserAvatar(user.id);
+        const deleteResult = await avatarService.deleteUserAvatar(user.id);
+        console.log('[Profile.onSubmit] Результат удаления:', deleteResult);
         data.avatar = undefined;
       } catch (error) {
-        console.error('Ошибка при удалении аватарки:', error);
+        console.error('[Profile.onSubmit] Ошибка при удалении аватарки:', error);
         alert('Не удалось удалить аватарку');
         return;
       }
+    }
+    
+    if (avatarPreview && !isAvatarDeleted) {
+      data.avatar = avatarPreview;
     }
   
     const success = await updateUser(data);
@@ -169,8 +173,6 @@ const Profile = () => {
       }
       return null;
     }
-    
-
      return user?.avatar || null;
   };
 
@@ -216,6 +218,9 @@ const Profile = () => {
   }
 
   const avatarToShow = getAvatarToShow();
+
+  console.log('User data:', user);
+  console.log('Avatar to show:', avatarToShow);
 
   return (
     <div className={styles.wrapper}>

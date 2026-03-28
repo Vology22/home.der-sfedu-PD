@@ -18,8 +18,8 @@ const getTgId = (): string => {
     return storedTgId;
   }
   
-  console.log('[getTgId] Используем demo_user_123');
-  return 'demo_user_123';
+  console.log('[getTgId] Используем test_user_123');
+  return 'test_user_123';
 };
 
 const mapBackendToFrontendUser = (
@@ -28,7 +28,6 @@ const mapBackendToFrontendUser = (
 ): User => {
   console.log('[mapBackendToFrontendUser] Начало маппинга:', { userData, avatarUrl });
   
-  // Добавьте проверку в начале функции
   if (!userData) {
     return {
       id: '',
@@ -134,7 +133,7 @@ export const useUserData = () => {
       console.log('[fetchUser] Шаг 4: Получение URL аватарки...');
       let avatarUrl: string | null = null;
       if (userData.avatar) {
-        avatarUrl = `http://localhost:8000/uploads/avatars/${userData.avatar}`;
+        avatarUrl = `http://localhost:3001/uploads/avatars/${userData.avatar}`;
         console.log('[fetchUser] Шаг 4: Аватарка найдена в userData, URL:', avatarUrl);
       } else {
         console.log('[fetchUser] Шаг 4: Аватарка не в userData, запрашиваем через avatarService...');
@@ -225,17 +224,26 @@ export const useUserData = () => {
         // Если загружена новая аватарка (base64)
         if (userData.avatar && userData.avatar.startsWith('data:image')) {
           console.log('[updateUser] Обнаружена новая аватарка в base64, загружаем...');
+
+          if (!user.id || user.id === 'undefined') {
+            console.error('[updateUser] Ошибка: user.id невалиден!');
+            throw new Error('ID пользователя невалиден');
+          }
+
           const blob = await fetch(userData.avatar).then(res => res.blob());
           const file = new File([blob], 'avatar.jpg', { type: blob.type });
           console.log('[updateUser] Создан файл для загрузки:', { name: file.name, size: file.size, type: file.type });
+          console.log('[updateUser] user.id для загрузки аватарки:', user.id);
           
           const uploadResult = await avatarService.uploadAvatar(String(user.id), file);
+          
+          console.log('[updateUser] Вызываем uploadAvatar с userId:', user.id, 'и file:', file.name);
           console.log('[updateUser] Результат загрузки аватарки:', uploadResult);
           avatarFilename = uploadResult.filename;
           newAvatarUrl = uploadResult.url;
         } 
         // Если аватарка удалена
-        else if (userData.avatar === undefined && user.avatar) {
+        else if (userData.avatar === undefined) {
           console.log('[updateUser] Аватарка удалена, удаляем файл...');
           await avatarService.deleteUserAvatar(String(user.id));
           avatarFilename = null;
