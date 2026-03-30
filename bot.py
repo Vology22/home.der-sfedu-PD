@@ -246,10 +246,10 @@ def create_thumbnail(image_data, filename):
         print(f"Ошибка создания миниатюры: {e}")
         return False
 
-def webAppKeyboard():
-    """Создание клавиатуры с webapp кнопкой"""
+def webAppKeyboard(user_id):
     keyboard = types.InlineKeyboardMarkup()
-    web_app = types.WebAppInfo(url_webapp)
+    dynamic_url = f"{url_webapp}?tg_id={user_id}"
+    web_app = types.WebAppInfo(dynamic_url)
     button = types.InlineKeyboardButton(text="Смотреть жильё", web_app=web_app)
     keyboard.add(button)
     return keyboard
@@ -613,7 +613,7 @@ def get_start(message):
 
 @bot.message_handler(commands=['menu'])
 def get_menu(message):
-    keyboard_menu = webAppKeyboard()
+    keyboard_menu = webAppKeyboard(message.from_user.id)
     my_home = types.InlineKeyboardButton(text="🏠 Мой дом", callback_data='my_home')   
     my_profile = types.InlineKeyboardButton(text="👤 Мой профиль", callback_data='profile')  
     keyboard_menu.add(my_home, my_profile)
