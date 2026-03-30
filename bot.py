@@ -611,7 +611,7 @@ def get_start(message):
     bot.send_message(message.from_user.id, welcome_text, 
                     parse_mode="Markdown", reply_markup=keyboard_theme)
 
-@bot.message_handler(commands=['menu'])
+@bot.message_handler(commands=['menu']) # menu
 def get_menu(message):
     keyboard_menu = webAppKeyboard(message.from_user.id)
     my_home = types.InlineKeyboardButton(text="🏠 Мой дом", callback_data='my_home')   
