@@ -4,12 +4,14 @@ import { useUserData } from '../../hooks/useUserData';
 import styles from './Profile.module.scss';
 import { Button } from "../../components/ui";
 import { UserFormData } from './User';
+import { avatarService } from '../../services/avatarService';
 
 const Profile = () => {
   const { user, loading, error, fetchUser, updateUser } = useUserData();
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isAvatarDeleted, setIsAvatarDeleted] = useState(false);
   
   const {
     register,
@@ -46,6 +48,9 @@ const Profile = () => {
       setValue('badHabits', user.badHabits, { shouldDirty: false });
       setValue('pet', user.pet, { shouldDirty: false });
       setValue('hasRoommate', user.hasRoommate, { shouldDirty: false });
+
+      setAvatarPreview(null);
+      setIsAvatarDeleted(false); 
     }
   }, [user, setValue, isEditing]);
 
@@ -83,18 +88,23 @@ const Profile = () => {
       const base64 = e.target?.result as string;
       setAvatarPreview(base64);                       
       setValue('avatar', base64, { shouldDirty: true }); 
+      setIsAvatarDeleted(false); 
     };
     reader.readAsDataURL(file);
   };
 
   const handleDeleteAvatar = () => {
     if (!user) return;
-    if (!user.avatar && !avatarPreview) return; 
-      setAvatarPreview(null);
-      setValue('avatar', undefined, { shouldDirty: true });
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''; 
-      }
+    if (!user.avatar && !avatarPreview) return;
+    
+    console.log('[Profile] Отмечаем аватарку для удаления');
+    setAvatarPreview(null);
+    setValue('avatar', undefined, { shouldDirty: true });
+    setIsAvatarDeleted(true);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleCancel = () => {
@@ -111,15 +121,59 @@ const Profile = () => {
         hasRoommate: user.hasRoommate,
       });
       setAvatarPreview(null); 
+      setIsAvatarDeleted(false);
     }
     setIsEditing(false);
   };
 
   const onSubmit = async (data: UserFormData) => {
+    // Если пользователь удалил аватарку 
+    if (isAvatarDeleted && user?.avatar) {
+      console.log('[Profile.onSubmit] Удаляем аватарку...');
+      try {
+        const deleteResult = await avatarService.deleteUserAvatar(user.id);
+        console.log('[Profile.onSubmit] Результат удаления:', deleteResult);
+        data.avatar = undefined;
+      } catch (error) {
+        console.error('[Profile.onSubmit] Ошибка при удалении аватарки:', error);
+        alert('Не удалось удалить аватарку');
+        return;
+      }
+    }
+    
+    if (avatarPreview && !isAvatarDeleted) {
+      data.avatar = avatarPreview;
+    }
+  
     const success = await updateUser(data);
     if (success) {
       setIsEditing(false);
+      setAvatarPreview(null);
+      setIsAvatarDeleted(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
+  };
+
+  const getAvatarToShow = () => {
+    // В режиме редактирования
+    if (isEditing) {
+      // Если есть preview (новое выбранное фото) - показываем его
+      if (avatarPreview) {
+        return avatarPreview;
+      }
+      // Если фото удалено - показываем инициалы
+      if (isAvatarDeleted) {
+        return null;
+      }
+      // Если фото не удалено и нет preview - показываем текущее фото пользователя
+      if (user?.avatar) {
+        return user.avatar;
+      }
+      return null;
+    }
+     return user?.avatar || null;
   };
 
   if (loading && !user) {
@@ -163,13 +217,18 @@ const Profile = () => {
     );
   }
 
+  const avatarToShow = getAvatarToShow();
+
+  console.log('User data:', user);
+  console.log('Avatar to show:', avatarToShow);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.profile}>
         {/* Первый прямоугольник - фото профиля */}
         <div className={styles.photo_card}>
-          {avatarPreview ? (
-            <img src={avatarPreview} alt="Предпросмотр" className={styles.photo_card_image} />
+          {avatarToShow ? (
+            <img src={avatarToShow} alt="Предпросмотр" className={styles.photo_card_image} />
           ) : user.avatar ? (
             <img src={user.avatar} alt={`Аватар ${user.name}`} className={styles.photo_card_image} />
           ) : (
@@ -288,7 +347,7 @@ const Profile = () => {
                           message: 'Дата должна быть в формате дд.мм.гггг'
                         },
                         validate: {
-                          validDate: (value: string) => {
+                          validDate: (value) => {
                             const [day, month, year] = value.split('.').map(Number);
                             const date = new Date(year, month - 1, day);
                             const today = new Date();

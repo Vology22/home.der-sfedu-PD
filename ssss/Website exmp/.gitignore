@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 
 .env
+
+# Загруженные файлы
+uploads/
+
+# Локальный сервер
+server/node_modules/

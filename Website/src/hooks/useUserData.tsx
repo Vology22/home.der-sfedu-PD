@@ -34,8 +34,15 @@ export const useUserData = () => {
 
       setUser(prev => prev ? { 
         ...prev, 
+        avatar: userData.avatar,
         name: userData.name.trim(),
-        dateOfBirth: userData.dateOfBirth
+        dateOfBirth: userData.dateOfBirth,
+        surname: userData.surname,
+        patronymic: userData.patronymic,
+        gender: userData.gender,
+        badHabits: userData.badHabits,
+        pet: userData.pet,
+        hasRoommate: userData.hasRoommate,
       } : null);
       
       setError('');
