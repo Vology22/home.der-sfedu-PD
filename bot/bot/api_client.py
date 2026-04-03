@@ -6,7 +6,7 @@ load_dotenv()
 
 class APIClient:
     def __init__(self):
-        self.base_url = os.getenv('API_URL', 'http://localhost:8000/api/v1')
+        self.base_url = os.getenv('API_URL', 'https://homeder.ru/api/v1')
         self.api_key = os.getenv('API_KEY', '')
         self.headers = {'X-API-Key': self.api_key}
     
