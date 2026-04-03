@@ -9,8 +9,8 @@ DB_CONFIG = {
     'host': os.getenv('DATABASE_HOST', 'localhost'),
     'port': int(os.getenv('DATABASE_PORT', 3306)),
     'database': os.getenv('DATABASE_NAME', 'homeder'),
-    'user': os.getenv('DATABASE_USER', 'user'),
-    'password': os.getenv('DATABASE_PASSWORD', '')
+    'user': os.getenv('DATABASE_USER', 'bot'),
+    'password': os.getenv('DATABASE_PASSWORD', 'Mama1946!')
 }
 
 def get_connection():
