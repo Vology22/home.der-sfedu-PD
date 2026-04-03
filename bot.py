@@ -16,15 +16,15 @@ import io
 bot = telebot.TeleBot('8111172105:AAGsI6Fb23vIheBAhkibjPVFdhbpjX08s3s')  #  @homeder_bot
 URL_channel = 'https://t.me/homederSFEDU'
 channel_id = -1003305629380
-url_webapp = 'https://sfedu.ru/'
+url_webapp = 'https://homeder.ru'
 API_YANDEX_GEO = 'f890c5b3-ee8d-4585-8a32-cb803e92c57d'
 
 # Конфигурация базы данных MySQL
 DB_CONFIG = {
-    'host': '194.87.101.244',
+    'host': 'localhost',
     'database': 'homeder',
-    'user': 'user',
-    'password': '123456789',
+    'user': 'bot',
+    'password': 'Mama1946!',
     'port': 3306
 }
 
