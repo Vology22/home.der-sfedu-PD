@@ -1,26 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { User, UserFormData } from '../pages/Profile/User';
+import { User } from '../pages/Profile/User';
 import { userService, UserData } from '../services/userService';
-import { avatarService } from '../services/avatarService';
-
-const getTgId = (): string => {
-  console.log('[getTgId] Начало получения tg_id');
-  const urlParams = new URLSearchParams(window.location.search);
-  const tgId = urlParams.get('tg_id');
-  if (tgId) {
-    console.log('[getTgId] tg_id из URL:', tgId);
-    return tgId;
-  }
-  
-  const storedTgId = localStorage.getItem('tg_id');
-  if (storedTgId) {
-    console.log('[getTgId] tg_id из localStorage:', storedTgId);
-    return storedTgId;
-  }
-  
-  console.log('[getTgId] Используем test_user_123');
-  return 'test_user_123';
-};
+import { getTgId } from '../utils/tg.utils';
 
 const mapBackendToFrontendUser = (
   userData: UserData, 
@@ -60,44 +41,6 @@ const mapBackendToFrontendUser = (
   };
 };
 
-const mapFrontendToBackendData = (userData: UserFormData, avatarFilename?: string | null): { 
-  full_name: string; 
-  bio: string;
-  avatar?: string | null;
-} => {
-  console.log('[mapFrontendToBackendData] Начало маппинга данных формы:', { userData, avatarFilename });
-  
-  const fullNameParts = [userData.surname, userData.name];
-  if (userData.patronymic) {
-    fullNameParts.push(userData.patronymic);
-  }
-  const fullName = fullNameParts.join(' ');
-  console.log('[mapFrontendToBackendData] Полное имя:', fullName);
-  
-  const bioParts = [];
-  
-  if (userData.dateOfBirth) {
-    bioParts.push(`Дата рождения: ${userData.dateOfBirth}`);
-  }
-  
-  bioParts.push(`Пол: ${userData.gender === 'male' ? 'Мужской' : 'Женский'}`);
-  bioParts.push(`Вредные привычки: ${userData.badHabits === 'yes' ? 'Есть' : 'Нет'}`);
-  bioParts.push(`Домашние животные: ${userData.pet === 'yes' ? 'Есть' : 'Нет'}`);
-  bioParts.push(`Готов(а) к соседству: ${userData.hasRoommate === 'yes' ? 'Да' : 'Нет'}`);
-  
-  const bio = bioParts.join('; ');
-  console.log('[mapFrontendToBackendData] Сформированное bio:', bio);
-  
-  const result = { 
-    full_name: fullName, 
-    bio,
-    avatar: avatarFilename
-  };
-  
-  console.log('[mapFrontendToBackendData] Результат маппинга:', result);
-  return result;
-};
-
 export const useUserData = () => {
   console.log('[useUserData] Хук инициализирован');
   const [user, setUser] = useState<User | null>(null);
@@ -130,16 +73,9 @@ export const useUserData = () => {
         console.log('[fetchUser] Шаг 3: Пользователь найден:', userData);
       }
       
-      console.log('[fetchUser] Шаг 4: Получение URL аватарки...');
-      let avatarUrl: string | null = null;
-      if (userData.avatar) {
-        avatarUrl = `http://localhost:3001/uploads/avatars/${userData.avatar}`;
-        console.log('[fetchUser] Шаг 4: Аватарка найдена в userData, URL:', avatarUrl);
-      } else {
-        console.log('[fetchUser] Шаг 4: Аватарка не в userData, запрашиваем через avatarService...');
-        avatarUrl = await avatarService.getUserAvatarUrl(String(userData.user_id));
-        console.log('[fetchUser] Шаг 4: avatarService вернул:', avatarUrl);
-      }
+      console.log('[fetchUser] Шаг 4: Получение URL аватарки из поля avatar...');
+      const avatarUrl = userData.avatar || null;
+      console.log('[fetchUser] Шаг 4: avatar из БД:', avatarUrl);
       
       console.log('[fetchUser] Шаг 5: Маппинг бэкенд-данных во фронтенд-формат...');
       const mappedUser = mapBackendToFrontendUser(userData, avatarUrl);
@@ -198,120 +134,6 @@ export const useUserData = () => {
     }
   }, []);
 
-  const updateUser = useCallback(async (userData: UserFormData): Promise<boolean> => {
-    console.log('[updateUser] === НАЧАЛО ОБНОВЛЕНИЯ ПОЛЬЗОВАТЕЛЯ ===');
-    console.log('[updateUser] Данные формы для обновления:', userData);
-    
-    try {
-      setLoading(true);
-      setError(null);
-
-      if (!user) {
-        console.error('[updateUser] Ошибка: пользователь не найден в state');
-        throw new Error('Пользователь не найден');
-      }
-      
-      console.log('[updateUser] Текущий пользователь из state:', user);
-
-      let avatarFilename: string | null = null;
-      let newAvatarUrl: string | undefined = userData.avatar;
-      
-      console.log('[updateUser] Шаг 1: Обработка аватарки...');
-      console.log('[updateUser] userData.avatar:', userData.avatar);
-      
-      // Обработка аватарки
-      if (userData.avatar !== undefined) {
-        // Если загружена новая аватарка (base64)
-        if (userData.avatar && userData.avatar.startsWith('data:image')) {
-          console.log('[updateUser] Обнаружена новая аватарка в base64, загружаем...');
-
-          if (!user.id || user.id === 'undefined') {
-            console.error('[updateUser] Ошибка: user.id невалиден!');
-            throw new Error('ID пользователя невалиден');
-          }
-
-          const blob = await fetch(userData.avatar).then(res => res.blob());
-          const file = new File([blob], 'avatar.jpg', { type: blob.type });
-          console.log('[updateUser] Создан файл для загрузки:', { name: file.name, size: file.size, type: file.type });
-          console.log('[updateUser] user.id для загрузки аватарки:', user.id);
-          
-          const uploadResult = await avatarService.uploadAvatar(String(user.id), file);
-          
-          console.log('[updateUser] Вызываем uploadAvatar с userId:', user.id, 'и file:', file.name);
-          console.log('[updateUser] Результат загрузки аватарки:', uploadResult);
-          avatarFilename = uploadResult.filename;
-          newAvatarUrl = uploadResult.url;
-        } 
-        // Если аватарка удалена
-        else if (userData.avatar === undefined) {
-          console.log('[updateUser] Аватарка удалена, удаляем файл...');
-          await avatarService.deleteUserAvatar(String(user.id));
-          avatarFilename = null;
-          newAvatarUrl = undefined;
-          console.log('[updateUser] Аватарка удалена');
-        }
-        // Если аватарка не менялась, берем существующую
-        else if (user.avatar) {
-          console.log('[updateUser] Аватарка не менялась, используем существующую:', user.avatar);
-          const match = user.avatar.match(/avatars\/(.+)$/);
-          avatarFilename = match ? match[1] : null;
-          console.log('[updateUser] Извлеченное имя файла:', avatarFilename);
-        }
-      } else {
-        console.log('[updateUser] userData.avatar === undefined, пропускаем обработку аватарки');
-      }
-
-      console.log('[updateUser] Шаг 2: Маппинг данных в бэкенд-формат...');
-      const backendData = mapFrontendToBackendData(userData, avatarFilename);
-      const tgId = getTgId();
-      console.log('[updateUser] Данные для отправки на бэкенд:', { backendData, tgId });
-
-      console.log('[updateUser] Шаг 3: Отправка запроса на обновление пользователя...');
-      const updatedUser = await userService.createOrUpdateUser({
-        full_name: backendData.full_name,
-        bio: backendData.bio,
-        tg_id: tgId,
-        avatar: backendData.avatar
-      });
-      console.log('[updateUser] Ответ от сервера:', updatedUser);
-
-      console.log('[updateUser] Шаг 4: Обновление локального state...');
-      setUser(prev => {
-        if (!prev) return null;
-        const newUser = { 
-          ...prev,
-          avatar: newAvatarUrl !== undefined ? newAvatarUrl : prev.avatar,
-          name: userData.name.trim(),
-          surname: userData.surname.trim(),
-          patronymic: userData.patronymic?.trim() || '',
-          dateOfBirth: userData.dateOfBirth,
-          gender: userData.gender,
-          badHabits: userData.badHabits,
-          pet: userData.pet,
-          hasRoommate: userData.hasRoommate,
-        };
-        console.log('[updateUser] Обновленный пользователь в state:', newUser);
-        return newUser;
-      });
-      
-      console.log('[updateUser] === ОБНОВЛЕНИЕ УСПЕШНО ЗАВЕРШЕНО ===');
-      return true;
-
-    } catch (err) {
-      console.error('[updateUser] === ОШИБКА ПРИ ОБНОВЛЕНИИ ПОЛЬЗОВАТЕЛЯ ===');
-      console.error('[updateUser] Детали ошибки:', err);
-      if (err instanceof Error) {
-        console.error('[updateUser] Сообщение ошибки:', err.message);
-        console.error('[updateUser] Стек ошибки:', err.stack);
-      }
-      setError(err instanceof Error ? err.message : 'Ошибка при обновлении данных');
-      return false;
-    } finally {
-      setLoading(false);
-      console.log('[updateUser] loading установлен в false');
-    }
-  }, [user]);
-
   useEffect(() => {
     console.log('[useUserData] useEffect сработал, вызываем fetchUser');
     fetchUser();
@@ -324,6 +146,5 @@ export const useUserData = () => {
     loading,
     error,
     fetchUser,
-    updateUser,
   };
 };

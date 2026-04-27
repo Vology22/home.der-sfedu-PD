@@ -1,0 +1,132 @@
+@use '/src/scss/mixins';
+@use '/src/scss/media';
+@use '/src/scss/variables';
+
+.filterPage {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-left: 40%;
+}
+
+.filtersCard {
+  background-color: var(--color-purple);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px 3px var(--color-lightGrey);
+  margin-bottom: 20px;
+ 
+  &_label {
+    @extend %font-main;
+    font-family: Montserrat-Medium;
+    color: var(--color-darkGrey);
+    opacity: 0.8;
+    margin-bottom: 3px;
+  }
+}
+
+.filterGroup {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  @extend %font-main;
+  font-weight: 500;
+  color: var(--color-darkGrey);
+}
+
+.rangeInputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--color-lightGrey);
+    border-radius: 8px;
+    background-color: var(--color-white);
+
+    &:focus {
+      border-color: var(--color-coral);
+      outline: none;
+    }
+  }
+}
+
+.separator {
+  color: var(--color-darkGrey);
+}
+
+.inputField {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-lightGrey);
+  border-radius: 8px;
+  background-color: var(--color-white);
+
+  &:focus {
+    border-color: var(--color-coral);
+    outline: none;
+  }
+}
+
+.buttons{
+   display: flex;
+   gap: 15px;
+   justify-content: center;
+
+   button{
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      border: 2px solid var(--color-lightOrange);
+
+      &:first-child{
+        border: 2px solid var(--color-lightPurple);
+      }
+   }
+}
+
+.applyButton {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-coral);
+  color: var(--color-white);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  @include media.hover {
+    &:hover {
+      background-color: #ff6b42;
+    }
+  }
+}
+
+.resetButton {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-lightPurple);
+  color: var(--color-darkGrey);
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+
+  @include media.hover {
+    &:hover {
+      background-color: var(--color-purple);
+    }
+  }
+}
+
+// Мобильная адаптация
+@include media.mobile {
+  .filterPage {
+    padding: 15px;
+  }
+}

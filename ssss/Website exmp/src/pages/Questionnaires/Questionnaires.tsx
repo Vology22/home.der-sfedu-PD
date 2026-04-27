@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ListCards } from "../../components/widgets";
 
 const Questionnaires = () => {
-   const [isLoading, _] = useState(false); // пока нет сервера
+   const [isLoading, _] = useState(false); 
 
    return ( 
       <>

@@ -1,0 +1,110 @@
+@use '/src/scss/mixins';
+@use '/src/scss/media';
+
+.favorites {
+  max-width: 550px;
+  margin: 0 auto;
+  margin-left: 40%;
+  padding: 20px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card{
+  width: 100%;
+  background-color: var(--color-purple);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  box-shadow: 0 0 10px 3px var(--color-lightGrey);
+
+  &_image{
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+
+  &_description{
+    background-color: var(--color-white);
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  p:not(:last-child){
+    margin-bottom: 10px;
+  }
+}
+
+// Контейнер для изображения (относительное позиционирование для сердечка)
+.imageContainer {
+  position: relative;
+  width: 100%;
+}
+
+// Сердечко поверх изображения
+.favoriteButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 1;
+
+  @include media.hover {
+    &:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg, .filledHeart {
+    font-size: 20px;
+    color: #ff4757;
+  }
+}
+
+// Пустое состояние
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-darkGrey);
+  
+  svg {
+    font-size: 80px;
+    margin-bottom: 20px;
+    color: var(--color-lightGrey);
+  }
+  
+  p {
+    font-size: 18px;
+    margin: 0;
+  }
+  
+  .emptyHint {
+    font-size: 14px;
+    margin-top: 8px;
+    color: var(--color-darkGrey);
+  }
+}
+
+// Ошибка
+.error {
+  text-align: center;
+  padding: 60px 20px;
+  color: #ff4757;
+}

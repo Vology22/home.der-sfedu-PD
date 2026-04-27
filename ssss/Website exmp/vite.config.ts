@@ -1,24 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import { fileURLToPath, URL } from 'node:url'  // ← другой импорт
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-        '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      // Для загрузки аватарок
-      '/upload-avatar': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      '/uploads': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-    },
+  resolve: {
+    alias: {
+      'src': fileURLToPath(new URL('./src', import.meta.url))
+      // или с символом @:
+      // '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
   },
 })

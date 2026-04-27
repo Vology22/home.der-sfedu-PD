@@ -7,6 +7,7 @@
    @include mixins.adaptiveValue('max-width', 200, 350);
 
    position: absolute;
+   z-index: 100; 
    left: 0;
    background-color: var(--color-purple);
    padding: 15px;

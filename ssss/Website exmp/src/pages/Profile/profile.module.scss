@@ -62,7 +62,7 @@
    }   
 }
 
-// Первый прямоугольник - пока только подтверждение, в дальнешем фото профиля
+// Первый прямоугольник -  фото профиля
 .photo_card {
   width: 100%;
   background-color: var(--color-purple);
@@ -96,16 +96,6 @@
       font-weight: bold;
    }
 
-   &_verified {
-      @extend %font-main;
-      color: var(--color-darkGrey);
-      background-color: var(--color-lightPurple);
-      padding: 6px 15px;
-      border-radius: 15px;
-      display: inline-block;
-      font-family: Montserrat-Medium;
-      font-size: 0.9em;
-   }
 }
 
 // Второй прямоугольник - личная информация
@@ -124,11 +114,6 @@
       border-bottom: 2px solid var(--color-lightPurple);
       font-size: 14px;
       font-weight: 600;
-   }
-   
-   &_edit_button {
-      background-color: var(--color-coral);
-      color: var(--color-white);
    }
 
    &_grid {
@@ -178,40 +163,6 @@
    position: relative;
    width: 100%;
 
-   .info_card_input {
-      @extend %font-main;
-      color: var(--color-darkGrey);
-      padding: 10px 15px;
-      background-color: var(--color-white);
-      border-radius: 8px;
-      border: 1px solid var(--color-lightPurple);
-      min-height: 44px;
-      width: 100%;
-      box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s;
-
-      &:focus {
-         outline: none;
-         border-color: var(--color-coral);
-         box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
-      }
-      
-      &::placeholder {
-         color: var(--color-darkGrey);
-         opacity: 0.5;
-      }
-      
-      &:disabled {
-         background-color: var(--color-lightGrey);
-         cursor: not-allowed;
-      }
-
-      &.input_error {
-         border-color: #fc6b6b;
-         box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
-      }
-   }
-
    .error_text {
       @extend %font-main;
       color: #fc6b6b;
@@ -219,97 +170,5 @@
       margin-top: 5px;
       display: block;
       font-family: Montserrat-Medium;
-   }
-}
-
-.radio_group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: center;
-
-  @include media.tabletSmall {
-    gap: 15px;
-  }
-}
-
-.radio_option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  font-family: Montserrat-Medium, sans-serif;
-  @extend %font-main;
-  color: var(--color-darkGrey);
-
-   input[type="radio"] {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 20px;
-      height: 20px;
-      margin: 0;
-      border: 1px solid var(--color-lightPurple);
-      border-radius: 50%;
-      background-color: var(--color-white);
-      transition: all 0.2s ease;
-      cursor: pointer;
-      position: relative;
-
-      &:checked {
-         border-color: var(--color-coral);
-         background-color: var(--color-coral);
-
-         &::after {
-            content: '';
-            display: block;
-            width: 8px;
-            height: 8px;
-            background-color: var(--color-white);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-         }
-      }
-
-      &:hover {
-         border-color: var(--color-coral);
-         box-shadow: 0 0 0 1px var(--color-coral);
-      }
-   }
-
-   span {
-      @extend %font-main;
-      color: var(--color-darkGrey);
-      line-height: 1.2;
-   }
-}
-
-// Стили для кнопок
-.edit_controls {
-   display: flex;
-   gap: 15px;
-   margin-top: 25px;
-   padding-top: 20px;
-   border-top: 2px solid var(--color-lightPurple);
-   justify-content: flex-end;
-
-   .cancel_button {
-      background-color: var(--color-lightGrey);
-      color: var(--color-darkGrey);
-      border: 1px solid var(--color-lightPurple);
-   }
-
-   .save_button {
-      background-color: var(--color-coral);
-      color: var(--color-white);
-      
-      &:disabled {
-         background-color: var(--color-lightGrey);
-         color: var(--color-darkGrey);
-         cursor: not-allowed;
-         opacity: 0.6;
-      }
    }
 }
