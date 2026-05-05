@@ -1,18 +1,25 @@
 import api from './api';
 
+export interface PropertyImage {
+  img_id: number;
+  img_url: string;
+  is_cover: boolean;
+}
+
 export interface PropertyData {
   prop_id: number;
   owner_id: number;
-  price?: number;
+  price?: string;
   title?: string;
   description?: string;
   city?: string;
   created_at?: string;
+  images?: PropertyImage[];
 }
 
 export interface CreatePropertyData {
   owner_id: number;
-  price: number;
+  price: string;
   title: string;
   description: string;
   city: string;
@@ -40,12 +47,6 @@ class PropertyService {
       console.error('[PropertyService] Ошибка при получении объявления:', error);
       throw error;
     }
-  }
-
-  async createProperty(propertyData: CreatePropertyData): Promise<PropertyData> {
-    console.log('[PropertyService] Создание объявления:', propertyData);
-    const response = await api.post('/properties', propertyData);
-    return response.data;
   }
 }
 

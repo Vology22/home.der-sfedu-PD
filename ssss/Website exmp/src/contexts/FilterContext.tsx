@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface Filters {
-  minPrice?: number;
-  maxPrice?: number;
+  minCount?: number;
+  maxCount?: number;
   minSquare?: number;
   maxSquare?: number;
   city?: string;

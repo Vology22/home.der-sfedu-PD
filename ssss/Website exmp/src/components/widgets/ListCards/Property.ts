@@ -1,20 +1,29 @@
+export interface PropertyImage {
+  img_id: number;
+  img_url: string;
+  is_cover: boolean;
+}
+
 export interface Property {
   prop_id: number;
   owner_id: number;
-  image?: string;
-  price: number; // Стоимость
+  image: string;
+  images?: PropertyImage[];
+  price: string; // Стоимость
   title?: string;
   description?: string;
-  square?: string; // Квадратура (может быть в description или отдельно)
+  square?: string; 
   city?: string;
   created_at?: string;
+
 }
 
 export interface PropertyFormData {
   owner_id: number;
   image: string;
-  price: number;
+  price: string;
   title: string;
   description: string;
   city: string;
+  images?: PropertyImage[];
 }

@@ -15,6 +15,11 @@ class PropertyCreate(BaseModel):
     description: str
     city: Optional[str] = ""
 
+class PropertyImage(BaseModel):
+    img_id: int
+    img_url: str
+    is_cover: bool
+
 class PropertyResponse(BaseModel):
     prop_id: int
     owner_id: int
@@ -23,6 +28,7 @@ class PropertyResponse(BaseModel):
     description: Optional[str]
     city: Optional[str]
     created_at: Optional[datetime]
+    images: Optional[List[PropertyImage]] = []
 
 @router.post("/", response_model=PropertyResponse)
 async def create_property(property: PropertyCreate):
@@ -64,12 +70,69 @@ async def get_properties(limit: int = 50, offset: int = 0):
     
     cursor = conn.cursor(dictionary=True)
     try:
+        # Получаем свойства
         cursor.execute(
             "SELECT * FROM properties ORDER BY created_at DESC LIMIT %s OFFSET %s",
             (limit, offset)
         )
         properties = cursor.fetchall()
-        return [PropertyResponse(**p) for p in properties]
+        
+        # Для каждого свойства получаем фотографии
+        result = []
+        for prop in properties:
+            cursor.execute(
+                "SELECT img_id, img_url, is_cover FROM prop_image WHERE property = %s ORDER BY is_cover DESC, img_id",
+                (prop['prop_id'],)
+            )
+            images = cursor.fetchall()
+            
+            result.append(PropertyResponse(
+                prop_id=prop['prop_id'],
+                owner_id=prop['owner_id'],
+                price=prop['price'],
+                title=prop['title'],
+                description=prop['description'],
+                city=prop['city'],
+                created_at=prop['created_at'],
+                images=[PropertyImage(**img) for img in images]
+            ))
+        
+        return result
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+@router.get("/{prop_id}", response_model=PropertyResponse)
+async def get_property(prop_id: int):
+    conn = get_connection()
+    if not conn:
+        raise HTTPException(status_code=500, detail="Database connection failed")
+    
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM properties WHERE prop_id = %s", (prop_id,))
+        prop = cursor.fetchone()
+        
+        if not prop:
+            raise HTTPException(status_code=404, detail="Property not found")
+        
+        cursor.execute(
+            "SELECT img_id, img_url, is_cover FROM prop_image WHERE property = %s ORDER BY is_cover DESC, img_id",
+            (prop_id,)
+        )
+        images = cursor.fetchall()
+        
+        return PropertyResponse(
+            prop_id=prop['prop_id'],
+            owner_id=prop['owner_id'],
+            price=prop['price'],
+            title=prop['title'],
+            description=prop['description'],
+            city=prop['city'],
+            created_at=prop['created_at'],
+            images=[PropertyImage(**img) for img in images]
+        )
     
     finally:
         cursor.close()

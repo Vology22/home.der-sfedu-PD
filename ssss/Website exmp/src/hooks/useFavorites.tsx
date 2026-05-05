@@ -11,25 +11,58 @@ export const useFavorites = () => {
 
   // Маппинг избранного в формат Property
   const mapFavoriteToProperty = (favorite: FavoriteWithProperty): Property => {
-
     console.log('[mapFavoriteToProperty] Входящий favorite:', favorite);
+    
+    const propertyData = favorite.property;
+    
+    // Если property нет, возвращаем заглушку или выбрасываем ошибку
+    if (!propertyData) {
+      console.error('[mapFavoriteToProperty] Нет данных property в favorite:', favorite);
+      return {
+        prop_id: favorite.prop_id,
+        owner_id: 0,
+        image: '',
+        images: [],
+        price: 'не указана',
+        title: 'Данные не загружены',
+        description: '',
+        square: '',
+        city: '',
+        created_at: '',
+      };
+    }
+    
     // Парсим квадратуру из description
     let square = '';
-    if (favorite.description) {
-      const squareMatch = favorite.description.match(/(\d+)\s*кв\.?м/i);
+    if (propertyData.description) {
+      const squareMatch = propertyData.description.match(/(\d+)\s*кв\.?м/i);
       if (squareMatch) square = `${squareMatch[1]} м²`;
     }
-
+    
+    // Получаем массив всех изображений
+    let imagesArray: any[] = [];
+    let imageUrl = '';
+    
+    if (propertyData.images && propertyData.images.length > 0) {
+      // Сохраняем все изображения
+      imagesArray = propertyData.images;
+      
+      // Ищем обложку или берем первое изображение для поля image (для обратной совместимости)
+      const coverImage = propertyData.images.find((img: any) => img.is_cover);
+      imageUrl = coverImage ? coverImage.img_url : propertyData.images[0].img_url;
+    }
+    
     const mapped = {
-      prop_id: favorite.prop_id,
-      owner_id: 0,
-      image: favorite.image_url,
-      price: favorite.price || 0,
-      title: favorite.title,
-      description: favorite.description,
+      prop_id: propertyData.prop_id,
+      owner_id: propertyData.owner_id || 0,
+      image: imageUrl,
+      images: imagesArray, // Добавляем массив всех изображений
+      price: propertyData.price || 'Не указана',
+      title: propertyData.title || 'Без названия',
+      description: propertyData.description || '',
       square: square,
-      city: favorite.city,
-      created_at: favorite.created_at,
+      city: propertyData.city || '',
+      created_at: propertyData.created_at || '',
     };
     
     console.log('[mapFavoriteToProperty] Результат маппинга:', mapped);
@@ -92,16 +125,24 @@ export const useFavorites = () => {
 // Удалить из избранного
   const removeFromFavorite = useCallback(async (propId: number): Promise<boolean> => {
     try {
-      // DELETE
+      const tgId = getTgId();
+      const user = await userService.getUserByTgId(tgId);
+      
+      if (!user) {
+        throw new Error('Пользователь не найден');
+      }
 
-      // Пока просто обновляем локально
+      await favoriteService.removeFromFavorite(user.user_id, propId);
+      console.log('[useFavorites] Удалено из избранного:', propId);
+      
+      // Обновляем список
       setFavorites(prev => prev.filter(f => f.prop_id !== propId));
       return true;
     } catch (err) {
       console.error('[useFavorites] Ошибка при удалении:', err);
       return false;
     }
-  }, []);
+  }, []); 
 
   useEffect(() => {
     fetchFavorites();

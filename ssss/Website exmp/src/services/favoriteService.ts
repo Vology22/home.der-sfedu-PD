@@ -1,18 +1,22 @@
 import api from './api';
 
-export interface FavoriteData {
-  favorite_id: number;
+export interface FavoriteWithProperty {
   user_id: number;
   prop_id: number;
-  created_at: string;
-}
-
-export interface FavoriteWithProperty extends FavoriteData {
-  title?: string;
-  price?: number;
-  description?: string;
-  city?: string;
-  image_url?: string;
+  property: {
+    prop_id: number;
+    owner_id: number;
+    price: string;
+    title: string;
+    description: string;
+    city: string;
+    images: Array<{
+      img_id: number;
+      img_url: string;
+      is_cover: boolean;
+    }>;
+    created_at?: string;
+  };
 }
 
 class FavoriteService {
@@ -43,10 +47,10 @@ class FavoriteService {
   }
 
   // Удалить из избранного (если добавите эндпоинт на бэкенде)
-  async removeFromFavorite(favoriteId: number): Promise<void> {
+  async removeFromFavorite(userId: number, propId: number): Promise<void> {
     try {
-      console.log('[FavoriteService] Удаление из избранного:', favoriteId);
-      await api.delete(`/favorites/${favoriteId}`);
+      console.log('[FavoriteService] Удаление из избранного:', propId);
+      await api.delete(`/favorites/${userId}/${propId}`);
     } catch (error) {
       console.error('[FavoriteService] Ошибка при удалении из избранного:', error);
       throw error;

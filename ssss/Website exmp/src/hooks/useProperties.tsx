@@ -6,29 +6,43 @@ import { userService } from '../services/userService';
 import { useFilters } from '../contexts/FilterContext';
 
 const mapBackendToFrontendProperty = (propertyData: PropertyData): Property => {
-    console.log('[mapBackendToFrontendProperty] Маппинг:', propertyData);
+  console.log('[mapBackendToFrontendProperty] Маппинг:', propertyData);
 
-    // Парсим description, если там хранятся дополнительные поля
-    let square = '';
-    if (propertyData.description) {
-        const squareMatch = propertyData.description.match(/квадратура[:\s]+(\d+)/i);
-        if (squareMatch) square = `${squareMatch[1]} м²`;
+  // Парсим площадь из description
+  let square = '';
+  if (propertyData.description) {
+    const squareMatch = propertyData.description.match(/квадратура[:\s]+(\d+)/i);
+    if (squareMatch) square = `${squareMatch[1]} м²`;
+  }
+
+  let imageUrl = ''; // Путь к заглушке по умолчанию
+  if (propertyData.images && propertyData.images.length > 0) {
+    // Ищем обложку, если есть
+    const coverImage = propertyData.images.find(img => img.is_cover);
+    if (coverImage) {
+      imageUrl = coverImage.img_url;
+    } else {
+      // Или берем первое изображение
+      imageUrl = propertyData.images[0].img_url;
     }
-  
-    const mapped = {
-      prop_id: propertyData.prop_id,
-      owner_id: propertyData.owner_id,
-      image: `/api/v1/properties/${propertyData.prop_id}/image`, 
-      price: propertyData.price || 0,
-      title: propertyData.title || `Объявление #${propertyData.prop_id}`,
-      description: propertyData.description,
-      square: square || 'не указано',
-      city: propertyData.city || 'город не указан',
-      created_at: propertyData.created_at
-    };
+  }
 
-    console.log('[mapFavoriteToProperty] Результат маппинга:', mapped);
-    return mapped;
+  const mapped = {
+    prop_id: propertyData.prop_id,
+    owner_id: propertyData.owner_id,
+    image: imageUrl, 
+    price: propertyData.price || 'Не указана',
+    title: propertyData.title || `Объявление #${propertyData.prop_id}`,
+    description: propertyData.description,
+    square: square || 'не указано',
+    city: propertyData.city || 'город не указан',
+    created_at: propertyData.created_at,
+    images: propertyData.images || [] 
+  };
+
+  console.log('[mapBackendToFrontendProperty] Результат маппинга:', mapped);
+  return mapped;
+
 };
 
 // Функция для фильтрации (пока по цене, площади и городу)
@@ -37,9 +51,9 @@ const applyFiltersToProperties = (
   filters: { minPrice?: number; maxPrice?: number; minSquare?: number; maxSquare?: number; city?: string }
 ): PropertyData[] => {
   return properties.filter(prop => {
-    // Фильтр по цене
-    if (filters.minPrice !== undefined && (prop.price === undefined || prop.price < filters.minPrice)) return false;
-    if (filters.maxPrice !== undefined && (prop.price === undefined || prop.price > filters.maxPrice)) return false;
+    // Потом поменять на фильтр по кол-ву комнат
+    //if (filters.minPrice !== undefined && (prop.price === undefined || prop.price < filters.minPrice)) return false;
+    //if (filters.maxPrice !== undefined && (prop.price === undefined || prop.price > filters.maxPrice)) return false;
     
     // Фильтр по городу
     if (filters.city && !prop.city?.toLowerCase().includes(filters.city.toLowerCase())) return false;
@@ -68,6 +82,7 @@ export const useProperties = () => {
   const [dislikedId, setDislikedId] = useState<Set<number>>(new Set()); // Отслеживаем просмотренные индексы
   const [excludedIds, setExcludedIds] = useState<number[]>([]);
 
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
   const { filters } = useFilters();
 
   const favoritesRef = useRef<Property[]>([]);
@@ -146,13 +161,13 @@ export const useProperties = () => {
     setCurrentIndex(0);
     setDislikedId(new Set()); // Сбрасываем дизлайки при перезапуске
     setAllViewed(false);
+    setRefreshTrigger(prev => prev + 1);
   }, []);
 
   //Добавляем в просмотренные
   const addCurrentToDisliked = useCallback(() => {
     if (!currentProperty) return;
-    
-    // Добавляем в дизлайкнутые
+
     setDislikedId(prev => new Set(prev).add(currentProperty.prop_id));
   }, [currentIndex]);
 
@@ -165,7 +180,7 @@ export const useProperties = () => {
       console.log('[removePropertyById] ПОСЛЕ:', updated.map(p => p.prop_id));
       return updated;
     });
-
+    
     setExcludedIds(prev => [...prev, propId]);
   }, []);
 
@@ -190,7 +205,7 @@ export const useProperties = () => {
   // Обновляем объявления
   useEffect(() => {
     fetchProperties();
-  }, [filters, excludedIds]);
+  }, [filters, refreshTrigger]);
 
   const currentProperty = properties[currentIndex];
 
@@ -204,10 +219,10 @@ export const useProperties = () => {
     fetchProperties,
     nextProperty,
     allViewed, 
+    setAllViewed,
     restartViewing,
     addCurrentToDisliked, 
     removePropertyById,
-    setFavoritesRef,
-    
+    setFavoritesRef,   
   };
 };

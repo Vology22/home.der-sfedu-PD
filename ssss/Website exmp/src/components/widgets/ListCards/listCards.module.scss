@@ -2,6 +2,7 @@
 @use '/src/scss/media';
 
 .card{
+   max-width: 550px;
    width: 100%;
    background-color: var(--color-purple);
    border-radius: 10px;
@@ -12,6 +13,13 @@
    &_image{
       border-radius: 10px;
       margin-bottom: 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
    }
 
    &_description{
@@ -20,24 +28,141 @@
       padding: 10px;
    }
 
+   &_cost{
+      font-size: 1.5rem;
+      margin: 5px 0 0px;
+   }
+
    p:not(:last-child){
       margin-bottom: 10px;
    }
+
+   @include media.tablet {
+      max-width: 500px;
+   }
+
+   .imageContainer {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; 
+      background-color: var(--color-lightGrey);
+      border-radius: 10px;
+      overflow: hidden;
+   }
+
+   // Кнопки навигации
+   .navButton {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10;
+
+      svg {
+         width: 24px;
+         height: 24px;
+      }
+
+      &:hover:not(:disabled) {
+         background-color: rgba(0, 0, 0, 0.7);
+         transform: translateY(-50%) scale(1.05);
+      }
+
+      &:disabled {
+         opacity: 0.3;
+         cursor: not-allowed;
+      }
+   }
+
+   .navPrev {
+      left: 12px;
+   }
+
+   .navNext {
+      right: 12px;
+   }
+
+   // Счетчик фото
+   .imageCounter {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      color: white;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 10;
+   }
+
+   // Индикаторы-точки
+   .imageDots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+   }
+
+   .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+         background-color: rgba(255, 255, 255, 0.8);
+      }
+   }
+
+   .dotActive {
+      background-color: white;
+      width: 20px;
+      border-radius: 4px;
+   }
+
 }
 
-.cycleNotification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-weight: bold;
-  z-index: 1000;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  white-space: nowrap;
+.completedView {
+   text-align: center;
+   padding: 40px 20px;
+
+   .completedContent {
+      background-color: var(--color-white);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+      p {
+         font-size: 18px;
+         font-weight: 500;
+         margin-bottom: 16px;
+      }
+
+      .stats {
+         margin-bottom: 24px;
+         color: var(--color-text-secondary);
+      }
+   }
 }
 
 .buttons{
@@ -55,5 +180,120 @@
       &:first-child{
          border: 2px solid var(--color-lightPurple);
       }
+   }
+}
+
+// Lightbox
+.lightbox {
+   position: fixed;
+   inset: 0;
+   z-index: 1000;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.lightboxBg {
+   position: absolute;
+   inset: 0;
+   background-size: cover;
+   background-position: center;
+   filter: blur(20px) brightness(0.4);
+   transform: scale(1.1);
+}
+
+.lightboxClose {
+   position: absolute;
+   top: 16px;
+   right: 16px;
+   z-index: 10;
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   background-color: rgba(0, 0, 0, 0.55);
+   backdrop-filter: blur(4px);
+   color: white;
+   border: none;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   transition: background-color 0.2s ease;
+
+   svg { width: 22px; height: 22px; }
+   &:hover { background-color: rgba(0, 0, 0, 0.75); }
+}
+
+.lightboxNav {
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   z-index: 10;
+   width: 44px;
+   height: 44px;
+   border-radius: 50%;
+   background-color: rgba(0, 0, 0, 0.5);
+   backdrop-filter: blur(4px);
+   color: white;
+   border: none;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   transition: background-color 0.2s ease, transform 0.2s ease;
+
+   svg { width: 24px; height: 24px; }
+
+   &:hover:not(:disabled) {
+      background-color: rgba(0, 0, 0, 0.75);
+      transform: translateY(-50%) scale(1.05);
+   }
+   &:disabled { opacity: 0.3; cursor: not-allowed; }
+}
+
+.lightboxPrev { left: 16px; }
+.lightboxNext { right: 16px; }
+
+.lightboxImageWrap {
+   position: relative;
+   z-index: 5;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   max-width: 92vw;
+   max-height: 88vh;
+}
+
+.lightboxImage {
+   max-width: 100%;
+   max-height: 88vh;
+   object-fit: contain;
+   border-radius: 8px;
+   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.lightboxCounter {
+   position: absolute;
+   bottom: 20px;
+   left: 50%;
+   transform: translateX(-50%);
+   z-index: 10;
+   background-color: rgba(0, 0, 0, 0.55);
+   backdrop-filter: blur(4px);
+   color: white;
+   padding: 4px 12px;
+   border-radius: 20px;
+   font-size: 13px;
+   font-weight: 500;
+}
+
+.error,
+.empty {
+   text-align: center;
+   padding: 40px 20px;
+
+   p {
+      margin-bottom: 20px;
+      color: var(--color-text-secondary);
    }
 }

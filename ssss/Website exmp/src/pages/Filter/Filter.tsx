@@ -9,16 +9,16 @@ const Filter = () => {
   const { setFilters, resetFilters, filters} = useFilters();
   const navigate = useNavigate();
   
-  const [minPrice, setMinPrice] = useState<string>(filters.minPrice?.toString() || '');
-  const [maxPrice, setMaxPrice] = useState<string>(filters.maxPrice?.toString() || '');
+  const [minCount, setMinCount] = useState<string>(filters.minCount?.toString() || '');
+  const [maxCount, setMaxCount] = useState<string>(filters.maxCount?.toString() || '');
   const [minSquare, setMinSquare] = useState<string>(filters.minSquare?.toString() || '');
   const [maxSquare, setMaxSquare] = useState<string>(filters.maxSquare?.toString() || '');
   const [city, setCity] = useState<string>(filters.city || '');
 
   const handleApplyFilters = () => {
     const newFilters = {
-      minPrice: minPrice ? Number(minPrice) : undefined,
-      maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      minCount: minCount ? Number(minCount) : undefined,
+      maxCount: maxCount ? Number(maxCount) : undefined,
       minSquare: minSquare ? Number(minSquare) : undefined,
       maxSquare: maxSquare ? Number(maxSquare) : undefined,
       city: city || undefined,
@@ -29,8 +29,8 @@ const Filter = () => {
   };
 
   const handleReset = () => {
-    setMinPrice('');
-    setMaxPrice('');
+    setMinCount('');
+    setMaxCount('');
     setMinSquare('');
     setMaxSquare('');
     setCity('');
@@ -40,11 +40,11 @@ const Filter = () => {
   return (
     <div className={styles.filterPage}>    
       <div className={styles.filtersCard}>
-        <label className={styles.filtersCard_label} >Цена (₽)</label>
+        <label className={styles.filtersCard_label} >Количество комнат </label>
         <div className={styles.rangeInputs}>
-          <input type="number" placeholder="От" value={minPrice} onChange={(e) => setMinPrice(e.target.value)}/>
+          <input type="number" placeholder="От" value={minCount} onChange={(e) => setMinCount(e.target.value)}/>
           <span>—</span>
-          <input type="number" placeholder="До" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}/>
+          <input type="number" placeholder="До" value={maxCount} onChange={(e) => setMaxCount(e.target.value)}/>
         </div>
       </div>
 

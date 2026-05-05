@@ -3,19 +3,23 @@ import { motion, useAnimation } from "framer-motion";
 import { RxCross2 } from "react-icons/rx";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { FaRedoAlt } from "react-icons/fa"; 
+import { IoChevronBack, IoChevronForward, IoClose } from "react-icons/io5";
 import styles from "./listCards.module.scss";
 import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useProperties } from "../../../hooks/useProperties";
 import { useFavorites } from "../../../hooks/useFavorites"; 
 
 const ListCards = () => {
    const { 
+      properties, 
       currentProperty, 
       loading, 
       error, 
       nextProperty, 
       totalCount,
       allViewed,
+      setAllViewed,
       restartViewing,
       addCurrentToDisliked, 
       fetchProperties,
@@ -26,7 +30,14 @@ const ListCards = () => {
    const { addToFavorite, fetchFavorites, favorites } = useFavorites();
    const controls = useAnimation();
    const [imageError, setImageError] = useState(false);
+   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+   const [lightboxOpen, setLightboxOpen] = useState(false);
    const isInitialized = useRef(false);
+
+   useEffect(() => {
+      setCurrentImageIndex(0);
+      setImageError(false);
+   }, [currentProperty]);
 
    useEffect(() => {
       if (favorites) {
@@ -75,7 +86,7 @@ const ListCards = () => {
    };
 
    const handleLike = async () => {
-      if (allViewed) return; // Если все просмотрены, не обрабатываем действия
+      if (allViewed) return; 
 
       await controls.start({
          x: 100,
@@ -88,7 +99,12 @@ const ListCards = () => {
       console.log('Удаляю из локального массива...');
       removePropertyById(currentProperty.prop_id);
 
-      nextProperty();
+      if (properties.indexOf(currentProperty) + 1 >= properties.length) {
+         // Дошли до конца массива
+         setAllViewed(true);
+         return;
+      }
+
       setImageError(false);
 
       controls.set({ x: -100, opacity: 0 });
@@ -110,6 +126,52 @@ const ListCards = () => {
         restartViewing();
         fetchProperties();
       }, 100);
+   };
+
+   // Навигация по фотографиям
+   const nextImage = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (currentProperty?.images && currentImageIndex < currentProperty.images.length - 1) {
+         setCurrentImageIndex(prev => prev + 1);
+      }
+   };
+
+   const prevImage = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (currentImageIndex > 0) {
+         setCurrentImageIndex(prev => prev - 1);
+      }
+   };
+
+   const handleLightboxNext = () => {
+      if (currentProperty?.images && currentImageIndex < currentProperty.images.length - 1) {
+         setCurrentImageIndex(prev => prev + 1);
+      }
+   };
+
+   const handleLightboxPrev = () => {
+      if (currentImageIndex > 0) {
+         setCurrentImageIndex(prev => prev - 1);
+      }
+   };
+
+   const getCurrentImageUrl = () => {
+      if (imageError) return '/placeholder-image.jpg';
+
+      if (currentProperty?.images && currentProperty.images.length > 0) {
+         const currentImage = currentProperty.images[currentImageIndex];
+         return currentImage?.img_url || currentProperty.image || '/placeholder-image.jpg';
+      }
+
+      return currentProperty?.image || '/placeholder-image.jpg';
+   };
+
+   const getTotalImagesCount = () => {
+      if (currentProperty?.images && currentProperty.images.length > 0) {
+         return currentProperty.images.length;
+      }
+      // Если есть хотя бы одно изображение в поле image
+      return currentProperty?.image ? 1 : 0;
    };
 
    if (loading) {
@@ -147,6 +209,9 @@ const ListCards = () => {
 
    console.log('[ListCards] allViewed:', allViewed);
 
+   const totalImages = getTotalImagesCount();
+   const currentImageUrl = getCurrentImageUrl();
+
    return ( 
       <>    
       {allViewed ? (
@@ -172,16 +237,58 @@ const ListCards = () => {
                   initial={{ y: -100, opacity: 0 }}
                   className={styles.card}
                >
-                  <img 
-                     className={styles.card_image} 
-                     src={imageError ? '/placeholder-image.jpg' : currentProperty.image} 
-                     alt={currentProperty.title || 'Недвижимость'} 
-                     onError={() => setImageError(true)}
-                  />
+                  <div className={styles.imageContainer} onClick={() => {console.log('click!'); setLightboxOpen(true)}}>
+                        <img
+                           className={styles.card_image}
+                           src={currentImageUrl}
+                           alt={currentProperty.title || 'Недвижимость'}
+                           onError={() => setImageError(true)}
+                        />
+
+                        {/* Кнопки навигации по фото */}
+                        {totalImages > 1 && (
+                           <>
+                              <button
+                                 className={`${styles.navButton} ${styles.navPrev}`}
+                                 onClick={prevImage}
+                                 disabled={currentImageIndex === 0}
+                              >
+                                 <IoChevronBack />
+                              </button>
+                              <button
+                                 className={`${styles.navButton} ${styles.navNext}`}
+                                 onClick={nextImage}
+                                 disabled={currentImageIndex === totalImages - 1}
+                              >
+                                 <IoChevronForward />
+                              </button>
+
+                              {/* Индикатор текущего фото */}
+                              <div className={styles.imageCounter}>
+                                 {currentImageIndex + 1} / {totalImages}
+                              </div>
+                           </>
+                        )}
+
+                        {/* Индикаторы-точки */}
+                        {totalImages > 1 && (
+                           <div className={styles.imageDots}>
+                              {Array.from({ length: totalImages }).map((_, idx) => (
+                                 <button
+                                    key={idx}
+                                    className={`${styles.dot} ${idx === currentImageIndex ? styles.dotActive : ''}`}
+                                    onClick={(e) => {
+                                       e.stopPropagation();
+                                       setCurrentImageIndex(idx);
+                                    }}
+                                 />
+                              ))}
+                           </div>
+                        )}
+                  </div>
                   <p className={styles.card_cost}>
-                     {currentProperty.price.toLocaleString('ru-RU')} ₽
+                     {currentProperty.price}
                   </p>
-                  <p>{currentProperty.square || 'Площадь не указана'}</p>
                   <p>{currentProperty.city || 'Город не указан'}</p>
                   <div className={styles.card_description}>
                      <p>{currentProperty.title || 'Недвижимость'} </p>
@@ -200,6 +307,60 @@ const ListCards = () => {
                </Button>
             </div>
          </>
+      )}
+      {lightboxOpen && createPortal(
+         <motion.div
+            className={styles.lightbox}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setLightboxOpen(false)}
+         >
+            {/* Размытый фон — копия изображения */}
+            <div
+               className={styles.lightboxBg}
+               style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}
+            />
+
+            <button className={styles.lightboxClose} onClick={() => setLightboxOpen(false)}>
+               <IoClose />
+            </button>
+
+            {totalImages > 1 && (
+               <>
+                  <button
+                     className={`${styles.lightboxNav} ${styles.lightboxPrev}`}
+                     onClick={(e) => { e.stopPropagation(); handleLightboxPrev(); }}
+                     disabled={currentImageIndex === 0}
+                  >
+                     <IoChevronBack />
+                  </button>
+                  <button
+                     className={`${styles.lightboxNav} ${styles.lightboxNext}`}
+                     onClick={(e) => { e.stopPropagation(); handleLightboxNext(); }}
+                     disabled={currentImageIndex === totalImages - 1}
+                  >
+                     <IoChevronForward />
+                  </button>
+               </>
+            )}
+
+            <div className={styles.lightboxImageWrap} onClick={(e) => e.stopPropagation()}>
+               <img
+                  className={styles.lightboxImage}
+                  src={currentImageUrl}
+                  alt={currentProperty?.title || 'Недвижимость'}
+               />
+            </div>
+
+            {totalImages > 1 && (
+               <div className={styles.lightboxCounter}>
+                  {currentImageIndex + 1} / {totalImages}
+               </div>
+            )}
+         </motion.div>,
+         document.body
       )}
       </>
    );
