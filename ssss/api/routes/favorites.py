@@ -19,10 +19,14 @@ class PropertyImage(BaseModel):
 class FavoriteProperty(BaseModel):
     prop_id: int
     owner_id: int
-    price: Optional[int]
+    price: Optional[str]
     title: Optional[str]
     description: Optional[str]
     city: Optional[str]
+    floor: Optional[str]
+    rooms: Optional[str]
+    current_tenants: Optional[str]
+    potential_tenants: Optional[str]
     images: Optional[List[PropertyImage]] = []
 
 class FavoriteResponse(BaseModel):
@@ -100,7 +104,7 @@ async def get_user_favorites(user_id: int):
     try:
         cursor.execute("""
             SELECT f.user_id, f.prop_id, 
-                   p.title, p.price, p.description, p.city, p.owner_id
+                   p.title, p.price, p.description, p.city, p.owner_id, p.floor, p.rooms, p.current_tenants, p.potential_tenants
             FROM favorites f
             JOIN properties p ON f.prop_id = p.prop_id
             WHERE f.user_id = %s
@@ -126,6 +130,10 @@ async def get_user_favorites(user_id: int):
                     title=fav['title'],
                     description=fav['description'],
                     city=fav['city'],
+                    floor=fav['floor'],
+                    rooms=fav['rooms'],
+                    current_tenants=fav['current_tenants'],
+                    potential_tenants=fav['potential_tenants'],
                     images=[PropertyImage(**img) for img in images]
                 )
             ))

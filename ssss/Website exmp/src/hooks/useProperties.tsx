@@ -37,6 +37,10 @@ const mapBackendToFrontendProperty = (propertyData: PropertyData): Property => {
     square: square || 'не указано',
     city: propertyData.city || 'город не указан',
     created_at: propertyData.created_at,
+    floor: propertyData.floor || 0,
+    rooms: propertyData.rooms || 0,
+    current_tenants: propertyData.current_tenants || 0,
+    potential_tenants: propertyData.potential_tenants || 0,
     images: propertyData.images || [] 
   };
 
@@ -48,12 +52,26 @@ const mapBackendToFrontendProperty = (propertyData: PropertyData): Property => {
 // Функция для фильтрации (пока по цене, площади и городу)
 const applyFiltersToProperties = (
   properties: PropertyData[], 
-  filters: { minPrice?: number; maxPrice?: number; minSquare?: number; maxSquare?: number; city?: string }
+  filters: { minPrice?: number; maxPrice?: number; minSquare?: number; maxSquare?: number; city?: string 
+    minCount?: number; maxCount?: number; minFloor?: number; maxFloor?: number; minPeople?: number;
+    maxPeople?: number; minPeopleNow?: number; maxPeopleNow?: number; }
 ): PropertyData[] => {
   return properties.filter(prop => {
-    // Потом поменять на фильтр по кол-ву комнат
-    //if (filters.minPrice !== undefined && (prop.price === undefined || prop.price < filters.minPrice)) return false;
-    //if (filters.maxPrice !== undefined && (prop.price === undefined || prop.price > filters.maxPrice)) return false;
+    // Потом фильтр по кол-ву комнат
+    if (filters.minCount !== undefined && (prop.rooms === undefined || prop.rooms < filters.minCount)) return false;
+    if (filters.maxCount !== undefined && (prop.rooms === undefined || prop.rooms > filters.maxCount)) return false;
+    
+    // Потом фильтр по этажу
+    if (filters.minFloor !== undefined && (prop.floor === undefined || prop.floor < filters.minFloor)) return false;
+    if (filters.maxFloor !== undefined && (prop.floor === undefined || prop.floor > filters.maxFloor)) return false;
+
+    // Потом фильтр по живущим на данный момент
+    if (filters.minPeopleNow !== undefined && (prop.current_tenants === undefined || prop.current_tenants < filters.minPeopleNow)) return false;
+    if (filters.maxPeopleNow !== undefined && (prop.current_tenants === undefined || prop.current_tenants > filters.maxPeopleNow)) return false;
+
+    // Потом фильтр по кол-ву возможных потенциальных соседей
+    if (filters.minPeople !== undefined && (prop.potential_tenants === undefined || prop.potential_tenants < filters.minPeople)) return false;
+    if (filters.maxPeople !== undefined && (prop.potential_tenants === undefined || prop.potential_tenants > filters.maxPeople)) return false;
     
     // Фильтр по городу
     if (filters.city && !prop.city?.toLowerCase().includes(filters.city.toLowerCase())) return false;

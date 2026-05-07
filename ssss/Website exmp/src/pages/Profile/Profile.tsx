@@ -70,7 +70,7 @@ const Profile = () => {
         {/* Первый прямоугольник - фото профиля */}
         <div className={styles.photo_card}>
           {user.avatar ? (
-            <img src={user.avatar} alt={`Аватар ${user.name}`} className={styles.photo_card_image} />
+            <img src={user.avatar}className={styles.photo_card_image} />
           ) : (
             <div className={styles.photo_card_placeholder}>
               {getInitials(user.name)}

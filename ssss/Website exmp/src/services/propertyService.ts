@@ -14,15 +14,11 @@ export interface PropertyData {
   description?: string;
   city?: string;
   created_at?: string;
+  floor?: number;
+  rooms?: number;
+  current_tenants?: number;
+  potential_tenants?: number;
   images?: PropertyImage[];
-}
-
-export interface CreatePropertyData {
-  owner_id: number;
-  price: string;
-  title: string;
-  description: string;
-  city: string;
 }
 
 class PropertyService {

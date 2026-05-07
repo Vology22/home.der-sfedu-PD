@@ -3,6 +3,12 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 export interface Filters {
   minCount?: number;
   maxCount?: number;
+  minFloor?: number;
+  maxFloor?: number;
+  minPeople?: number;
+  maxPeople?: number;
+  minPeopleNow?: number;
+  maxPeopleNow?: number;
   minSquare?: number;
   maxSquare?: number;
   city?: string;

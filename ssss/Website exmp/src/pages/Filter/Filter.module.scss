@@ -3,10 +3,13 @@
 @use '/src/scss/variables';
 
 .filterPage {
-  max-width: 600px;
+  max-width: 550px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
-  margin-left: 40%;
+  position: relative;
+  left: 0;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
 }
 
 .filtersCard {
@@ -15,6 +18,7 @@
   padding: 20px;
   box-shadow: 0 0 10px 3px var(--color-lightGrey);
   margin-bottom: 20px;
+  width: 100%;
  
   &_label {
     @extend %font-main;
@@ -41,6 +45,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
+  width: 100%;
 
   input {
     flex: 1;
@@ -48,6 +53,7 @@
     border: 1px solid var(--color-lightGrey);
     border-radius: 8px;
     background-color: var(--color-white);
+    min-width: 0;
 
     &:focus {
       border-color: var(--color-coral);
@@ -74,21 +80,21 @@
 }
 
 .buttons{
-   display: flex;
-   gap: 15px;
-   justify-content: center;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
 
-   button{
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      width: 100%;
-      border: 2px solid var(--color-lightOrange);
+  button{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    border: 2px solid var(--color-lightOrange);
 
-      &:first-child{
-        border: 2px solid var(--color-lightPurple);
-      }
-   }
+    &:first-child{
+      border: 2px solid var(--color-lightPurple);
+    }
+  }
 }
 
 .applyButton {
@@ -121,12 +127,5 @@
     &:hover {
       background-color: var(--color-purple);
     }
-  }
-}
-
-// Мобильная адаптация
-@include media.mobile {
-  .filterPage {
-    padding: 15px;
   }
 }

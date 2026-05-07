@@ -3,11 +3,15 @@
 
 .wrapper {
   @include mixins.adaptiveValue('padding-top', 15, 30);
+
+  @include media.mobile {
+    padding-bottom: 120px;
+  }
 }
 
 .content {
   @include mixins.adaptiveValue('max-width', 390, 500);
-  
+
   position: relative;
   left: 40%;
 
@@ -17,52 +21,46 @@
   }
 }
 
-.favorites {
-  max-width: 550px;
-  margin: 0 auto;
-  margin-left: 40%;
-  padding: 20px;
-}
-
 .list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 20px; 
+  width: 100%;
+  margin: 0 auto;
+  position: relative
 }
 
-.card{
+.card {
   width: 100%;
   background-color: var(--color-purple);
   border-radius: 10px;
-  margin-bottom: 20px;
   padding: 10px;
   box-shadow: 0 0 10px 3px var(--color-lightGrey);
+  position: relative;
 
-  &_image{
+  &_image {
     border-radius: 10px;
-    margin-bottom: 15px;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
   }
 
-  &_description{
+  &_description {
     background-color: var(--color-white);
     border-radius: 10px;
     padding: 10px;
   }
 
-  &_cost{
+  &_cost {
     font-size: 1.5rem;
     margin: 5px 0 0px;
   }
 
-  p:not(:last-child){
-    margin-bottom: 10px;
+  p:not(:last-child) {
+    margin-bottom: 2px;
   }
 
   @include media.tablet {
@@ -72,14 +70,14 @@
   .imageContainer {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; 
+    padding-top: 56.25%;
     background-color: var(--color-lightGrey);
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
+    will-change: transform;
   }
 
-  // Кнопки навигации
   .navButton {
     position: absolute;
     top: 50%;
@@ -99,30 +97,24 @@
     z-index: 10;
 
     svg {
-        width: 24px;
-        height: 24px;
+      width: 24px;
+      height: 24px;
     }
 
     &:hover:not(:disabled) {
-        background-color: rgba(0, 0, 0, 0.7);
-        transform: translateY(-50%) scale(1.05);
+      background-color: rgba(0, 0, 0, 0.7);
+      transform: translateY(-50%) scale(1.05);
     }
 
     &:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
+      opacity: 0.3;
+      cursor: not-allowed;
     }
   }
 
-  .navPrev {
-    left: 12px;
-  }
+  .navPrev { left: 12px; }
+  .navNext { right: 12px; }
 
-  .navNext {
-    right: 12px;
-  }
-
-  // Счетчик фото
   .imageCounter {
     position: absolute;
     top: 10px;
@@ -137,7 +129,6 @@
     z-index: 10;
   }
 
-  // Индикаторы-точки
   .imageDots {
     position: absolute;
     bottom: 12px;
@@ -170,7 +161,6 @@
   }
 }
 
-// Заглушка при отсутствии фото
 .noImage {
   position: absolute;
   inset: 0;
@@ -185,7 +175,6 @@
   p { font-size: 14px; margin: 0; }
 }
 
-// Lightbox
 .lightbox {
   position: fixed;
   inset: 0;
@@ -289,7 +278,6 @@
   font-weight: 500;
 }
 
-// Пустое состояние
 .favoriteButton {
   position: absolute;
   top: 10px;
@@ -304,7 +292,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  z-index: 1;
+  z-index: 11;
 
   @include media.hover {
     &:hover {
@@ -323,23 +311,22 @@
   }
 }
 
-// Пустое состояние
 .empty {
   text-align: center;
   padding: 60px 20px;
   color: var(--color-darkGrey);
-  
+
   svg {
     font-size: 80px;
     margin-bottom: 20px;
     color: var(--color-lightGrey);
   }
-  
+
   p {
     font-size: 18px;
     margin: 0;
   }
-  
+
   .emptyHint {
     font-size: 14px;
     margin-top: 8px;
@@ -347,7 +334,6 @@
   }
 }
 
-// Ошибка
 .error {
   text-align: center;
   padding: 60px 20px;

@@ -14,6 +14,10 @@ export interface Property {
   description?: string;
   square?: string; 
   city?: string;
+  floor?: number;
+  rooms?: number;
+  current_tenants?: number;
+  potential_tenants?: number;
   created_at?: string;
 
 }
@@ -25,5 +29,9 @@ export interface PropertyFormData {
   title: string;
   description: string;
   city: string;
+  floor: number;
+  rooms: number;
+  current_tenants: number;
+  potential_tenants: number;
   images?: PropertyImage[];
 }

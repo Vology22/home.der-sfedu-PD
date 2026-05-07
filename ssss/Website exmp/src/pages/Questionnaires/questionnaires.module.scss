@@ -3,6 +3,10 @@
 
 .wrapper{
    @include mixins.adaptiveValue('padding-top', 15, 30);
+   
+   @include media.mobile {
+      padding-bottom: 120px;
+   }
 }
 
 .content{

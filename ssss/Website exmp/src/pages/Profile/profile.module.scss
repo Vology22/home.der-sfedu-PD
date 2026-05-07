@@ -1,10 +1,14 @@
-
 @use '/src/scss/variables';
 @use '/src/scss/mixins';
 @use '/src/scss/media';
 
 .wrapper {
   @include mixins.adaptiveValue('padding-top', 15, 30);
+  padding-bottom: 80px; 
+
+  @include media.mobile {
+      padding-bottom: 100px;
+  }
 }
 
 .profile {
@@ -18,6 +22,7 @@
   @include media.tabletSmall{
       left: 50%;
       transform: translateX(-50%);
+      width: 90%;
    }
 
    .loading, .error {
@@ -110,8 +115,6 @@
       @extend %font-heading2;
       color: var(--color-darkGrey);
       margin: 0 0 20px 0;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--color-lightPurple);
       font-size: 14px;
       font-weight: 600;
    }
@@ -153,9 +156,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-lightPurple);
   }
 }
 

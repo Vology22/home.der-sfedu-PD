@@ -10,6 +10,10 @@ export interface FavoriteWithProperty {
     title: string;
     description: string;
     city: string;
+    floor: number;
+    rooms: number;
+    current_tenants: number;
+    potential_tenants: number;
     images: Array<{
       img_id: number;
       img_url: string;

@@ -286,10 +286,11 @@ const ListCards = () => {
                            </div>
                         )}
                   </div>
-                  <p className={styles.card_cost}>
-                     {currentProperty.price}
-                  </p>
-                  <p>{currentProperty.city || 'Город не указан'}</p>
+                  <p className={styles.card_cost}> {currentProperty.price} </p>
+                  <p>{currentProperty.city || 'Город не указан'}, этаж: {currentProperty.floor || 'не указан'}.</p>
+                  <p>Количество комнат: {currentProperty.rooms || 'не указано'}.</p>
+                  <p>Количество проживающих сейчас людей: {currentProperty.current_tenants || 'не указано'}. </p> 
+                  <p>Количество потенциальных жильцов: {currentProperty.potential_tenants || 'не указано'}.</p>
                   <div className={styles.card_description}>
                      <p>{currentProperty.title || 'Недвижимость'} </p>
                      {currentProperty.description || 'Описание отсутствует'}

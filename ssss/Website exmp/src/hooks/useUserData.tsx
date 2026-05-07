@@ -5,9 +5,8 @@ import { getTgId } from '../utils/tg.utils';
 
 const mapBackendToFrontendUser = (
   userData: UserData, 
-  avatarUrl: string | null
 ): User => {
-  console.log('[mapBackendToFrontendUser] Начало маппинга:', { userData, avatarUrl });
+  console.log('[mapBackendToFrontendUser] Начало маппинга:', { userData });
   
   if (!userData) {
     return {
@@ -29,7 +28,7 @@ const mapBackendToFrontendUser = (
   
   return {
     id: String(userData.user_id || ''),
-    avatar: avatarUrl || undefined,
+    avatar: userData.avatar || undefined,
     name: nameParts[1] || '',
     surname: nameParts[0] || '',
     patronymic: nameParts[2] || '',
@@ -78,7 +77,7 @@ export const useUserData = () => {
       console.log('[fetchUser] Шаг 4: avatar из БД:', avatarUrl);
       
       console.log('[fetchUser] Шаг 5: Маппинг бэкенд-данных во фронтенд-формат...');
-      const mappedUser = mapBackendToFrontendUser(userData, avatarUrl);
+      const mappedUser = mapBackendToFrontendUser(userData);
       console.log('[fetchUser] Шаг 5: После маппинга:', mappedUser);
       
       // Парсим bio если есть

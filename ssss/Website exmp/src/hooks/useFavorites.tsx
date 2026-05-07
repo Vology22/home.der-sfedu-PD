@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect} from 'react';
 import { Property } from '../components/widgets//ListCards/Property';
 import { favoriteService, FavoriteWithProperty } from '../services/favoriteService';
 import { userService } from '../services/userService';
@@ -9,7 +9,7 @@ export const useFavorites = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Маппинг избранного в формат Property
+    // Маппинг избранного в формат Property
   const mapFavoriteToProperty = (favorite: FavoriteWithProperty): Property => {
     console.log('[mapFavoriteToProperty] Входящий favorite:', favorite);
     
@@ -28,6 +28,10 @@ export const useFavorites = () => {
         description: '',
         square: '',
         city: '',
+        floor: 0,
+        rooms: 0,
+        current_tenants: 0,
+        potential_tenants: 0,
         created_at: '',
       };
     }
@@ -62,6 +66,10 @@ export const useFavorites = () => {
       description: propertyData.description || '',
       square: square,
       city: propertyData.city || '',
+      floor: propertyData.floor || 0,
+      rooms: propertyData.rooms || 0,
+      current_tenants: propertyData.current_tenants || 0,
+      potential_tenants: propertyData.potential_tenants || 0,
       created_at: propertyData.created_at || '',
     };
     
@@ -71,6 +79,7 @@ export const useFavorites = () => {
 
   // Загрузить избранное
   const fetchFavorites = useCallback(async () => {
+    console.log('FETCH START', Date.now());
     console.log('[useFavorites] === НАЧАЛО ЗАГРУЗКИ ИЗБРАННОГО ===');
     try {
       setLoading(true);
@@ -122,7 +131,7 @@ export const useFavorites = () => {
     }
   }, [fetchFavorites]);
 
-// Удалить из избранного
+  // Удалить из избранного
   const removeFromFavorite = useCallback(async (propId: number): Promise<boolean> => {
     try {
       const tgId = getTgId();

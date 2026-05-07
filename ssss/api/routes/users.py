@@ -11,11 +11,13 @@ class UserCreate(BaseModel):
     full_name: str
     bio: Optional[str] = ""
     tg_id: str
+    avatar: Optional[str] = ""
 
 class UserResponse(BaseModel):
     user_id: int
     full_name: Optional[str]
     bio: Optional[str]
+    avatar: Optional[str]
     tg_id: Optional[str]
 
 @router.post("/", response_model=UserResponse)
@@ -31,19 +33,19 @@ async def create_user(user: UserCreate):
         
         if existing:
             cursor.execute(
-                "UPDATE users SET full_name = %s, bio = %s WHERE tg_id = %s",
-                (user.full_name, user.bio, user.tg_id)
+                "UPDATE users SET full_name = %s, bio = %s, avatar = %s WHERE tg_id = %s",
+                (user.full_name, user.bio, user.avatar , user.tg_id)
             )
             user_id = existing[0]
         else:
             cursor.execute(
-                "INSERT INTO users (full_name, bio, tg_id) VALUES (%s, %s, %s)",
-                (user.full_name, user.bio, user.tg_id)
+                "INSERT INTO users (full_name, bio, avatar , tg_id) VALUES (%s, %s, %s, %s)",
+                (user.full_name, user.bio, user.avatar , user.tg_id)
             )
             user_id = cursor.lastrowid
         
         conn.commit()
-        return UserResponse(user_id=user_id, full_name=user.full_name, bio=user.bio, tg_id=user.tg_id)
+        return UserResponse(user_id=user_id, full_name=user.full_name, bio=user.bio, avatar  = user.avatar , tg_id=user.tg_id)
     
     except Exception as e:
         conn.rollback()

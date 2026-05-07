@@ -33,8 +33,8 @@
       margin: 5px 0 0px;
    }
 
-   p:not(:last-child){
-      margin-bottom: 10px;
+   p:not(:last-child) {
+      margin-bottom: 2px;
    }
 
    @include media.tablet {
