@@ -101,28 +101,28 @@ const Profile = () => {
               </div>
               {/* Поле даты рождения */}
               <div className={styles.info_card_item}>
-                <span className={styles.info_card_label}>Дата рождения</span>
-                <span className={styles.info_card_value}>{user.dateOfBirth}</span>
+                <span className={styles.info_card_label}>Возраст (лет)</span>
+                <span className={styles.info_card_value}>{user.age}</span>
               </div>
               {/* Поле пола */}
               <div className={styles.info_card_item}>
                 <span className={styles.info_card_label}>Пол</span>
-                <span className={styles.info_card_value}>{user.gender === 'male' ? 'Мужской' : 'Женский'}</span>
+                <span className={styles.info_card_value}>{user.gender}</span>
               </div>
               {/* Поле плохих привычек*/}
               <div className={styles.info_card_item}>
                 <span className={styles.info_card_label}>Плохие привычки</span>
-                <span className={styles.info_card_value}>{user.badHabits === 'yes' ? 'Есть' : 'Нет'}</span>
+                <span className={styles.info_card_value}>{user.badHabits}</span>
               </div>
               {/* Поле питомцев*/}
               <div className={styles.info_card_item}>
                 <span className={styles.info_card_label}>Питомцы</span>
-                <span className={styles.info_card_value}>{user.pet === 'yes' ? 'Есть' : 'Нет'}</span>
+                <span className={styles.info_card_value}>{user.pet}</span>
               </div>
               {/* Поле соседа */}
               <div className={styles.info_card_item}>
                 <span className={styles.info_card_label}>Сожитель</span>
-                <span className={styles.info_card_value}>{user.hasRoommate === 'yes' ? 'Есть' : 'Нет'}</span>
+                <span className={styles.info_card_value}>{user.hasRoommate}</span>
               </div>
             </div>
         </div>

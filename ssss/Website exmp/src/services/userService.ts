@@ -6,6 +6,11 @@ export interface UserData {
   bio?: string;
   tg_id: string;
   avatar?: string | null; 
+   age: number;
+  gender: string; 
+  badHabits:string;
+  pet:string;
+  hasRoommate: string;
 }
 
 export interface CreateUserData {
@@ -13,6 +18,11 @@ export interface CreateUserData {
   bio?: string;
   tg_id: string;
   avatar?: string | null; 
+  age: number;
+  gender: string;
+  badHabits: string;
+  pet: string;
+  hasRoommate: string;
 }
 
 class UserService {

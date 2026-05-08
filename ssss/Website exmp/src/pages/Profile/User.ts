@@ -4,13 +4,11 @@ export interface User {
   name: string;
   surname: string;
   patronymic?: string;
-  dateOfBirth: string;
-  gender: 'male' | 'female';
-  
-  badHabits: 'yes' | 'no';
-  pet: 'yes' | 'no';
-
-  hasRoommate: 'yes' | 'no';
+  age: number;
+  gender: string;
+  badHabits: string;
+  pet: string;
+  hasRoommate: string;
 }
 
 export interface UserFormData {
@@ -18,11 +16,9 @@ export interface UserFormData {
   name: string;
   surname: string;
   patronymic?: string;
-  dateOfBirth: string;
-  gender: User['gender'];
-  
-  badHabits: User['badHabits'];  
-  pet: User['pet'];  
-
-  hasRoommate: User['hasRoommate'];  
+  age: number;
+  gender: string;
+  badHabits: string; 
+  pet:string; 
+  hasRoommate: string;
 }
